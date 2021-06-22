@@ -6,8 +6,12 @@ using Neo.SmartContract.Framework.Native;
 using Neo.SmartContract.Framework.Services;
 
 
-namespace NGDEnterprise.Samples
+namespace NgdEnterprise.Samples
 {
+    [DisplayName("NgdEnterprise.Samples.NeoContributorToken")]
+    [ManifestExtra("Author", "Harry Pierson")]
+    [ManifestExtra("Email", "harrypierson@hotmail.com")]
+    [ManifestExtra("Description", "This is an example contract")]
     public class NeoContributorToken : Nep11Token<NeoContributorToken.TokenState>
     {
         public class TokenState : Nep11TokenState
@@ -20,14 +24,14 @@ namespace NGDEnterprise.Samples
 
         public override string Symbol() => "NEOCNTRB";
 
-        public ByteString Mint(string name, string description, string image)
+        public static ByteString Mint(string name, string description, string image)
         {
             if (!ValidateContractOwner()) throw new Exception("Only the contract owner can mint tokens");
 
             var tokenId = NewTokenId();
             var tokenState = new NeoContributorToken.TokenState
             {
-                Owner = UInt160.Zero,
+                Owner = Runtime.ExecutingScriptHash,
                 Name = name,
                 Description = description,
                 Image = image,
@@ -37,7 +41,7 @@ namespace NGDEnterprise.Samples
         }
 
         [DisplayName("_deploy")]
-        public void Deploy(object data, bool update)
+        public static void Deploy(object data, bool update)
         {
             if (update) return;
 
@@ -46,7 +50,7 @@ namespace NGDEnterprise.Samples
             Storage.Put(Storage.CurrentContext, key, tx.Sender);
         }
 
-        public void Update(ByteString nefFile, string manifest)
+        public static void Update(ByteString nefFile, string manifest)
         {
             if (!ValidateContractOwner())
             {
@@ -55,7 +59,7 @@ namespace NGDEnterprise.Samples
             ContractManagement.Update(nefFile, manifest, null);
         }
 
-        private bool ValidateContractOwner()
+        private static bool ValidateContractOwner()
         {
             var key = new byte[] { Prefix_Contract_Owner };
             var contractOwner = (UInt160)Storage.Get(Storage.CurrentContext, key);
