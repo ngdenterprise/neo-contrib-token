@@ -1,0 +1,9 @@
+[
+  {
+    "contract": "NeoContributorToken",
+    "operation": "ownerOf",
+    "args": [
+      "0x0CE9114C51C9678BB52647E6D5F521417186B5637261DF48967818C1144EF23B"
+    ]
+  }
+]

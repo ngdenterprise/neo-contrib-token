@@ -1,3 +1,9 @@
 transfer 10000 gas genesis owen
 contract deploy ./src/bin/sc/NeoContributorToken.nef owen
 checkpoint create ./checkpoints/contract-deployed -f
+contract invoke ./invoke-files/mint-hongfei.neo-invoke.json owen
+checkpoint create ./checkpoints/hongfei-token-minted -f
+contract invoke ./invoke-files/mint-erik.neo-invoke.json owen
+checkpoint create ./checkpoints/erik-token-minted -f
+contract invoke ./invoke-files/mint-john.neo-invoke.json owen
+checkpoint create ./checkpoints/john-token-minted -f

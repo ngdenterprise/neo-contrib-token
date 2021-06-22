@@ -54,6 +54,40 @@
           }
         }
       ]
+    },
+    {
+      "name": "alice",
+      "accounts": [
+        {
+          "private-key": "ccc907b1d386a52071285e580322a612e505fd4f72d07358507f81fe99e734e8",
+          "script-hash": "NViTnvofZYshnqppD6ksCtUzBDn54an5hM",
+          "label": null,
+          "is-default": true,
+          "contract": {
+            "script": "0c2102883c3f44cc368d56027a6519ee32b23179247de99c9e8d887a1f844b66654d674156e7b327",
+            "parameters": [
+              "Signature"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "bob",
+      "accounts": [
+        {
+          "private-key": "ed3c61bd94338534da1470ec6e5275255eda40c40ddf80f55181c927501a1baf",
+          "script-hash": "NePJENmCpEDqf4YAKVc38KN18sRvUSCbzB",
+          "label": null,
+          "is-default": true,
+          "contract": {
+            "script": "0c2103f452356682ade0619a79914077b0a2cb9b48d5650dfcc94445ecaa6778d5ac854156e7b327",
+            "parameters": [
+              "Signature"
+            ]
+          }
+        }
+      ]
     }
   ],
   "settings": {}

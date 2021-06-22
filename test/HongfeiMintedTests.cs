@@ -1,15 +1,10 @@
 using System;
 using Xunit;
 using Neo.BlockchainToolkit;
-using System.IO.Abstractions;
 using Neo.BlockchainToolkit.Models;
-using Neo.Persistence;
-using Neo;
-using Neo.SmartContract.Native;
 using Neo.SmartContract;
 using Neo.VM;
 using System.Linq;
-using Neo.SmartContract.Manifest;
 using NeoTestHarness;
 using FluentAssertions;
 using testNeoContributorToken;
@@ -18,34 +13,20 @@ using Neo.BlockchainToolkit.SmartContract;
 using System.Collections.Generic;
 using Neo.IO;
 using Neo.Cryptography;
+using System.Numerics;
 
 namespace test
 {
-    [CheckpointPath("checkpoints/contract-deployed.neoxp-checkpoint")]
-    public class ContractDeployedTests : IClassFixture<CheckpointFixture<ContractDeployedTests>>
+    [CheckpointPath("checkpoints/hongfei-token-minted.neoxp-checkpoint")]
+    public class HongfeiMintedTests : IClassFixture<CheckpointFixture<HongfeiMintedTests>>
     {
         readonly CheckpointFixture fixture;
         readonly ExpressChain chain;
 
-        public ContractDeployedTests(CheckpointFixture<ContractDeployedTests> fixture)
+        public HongfeiMintedTests(CheckpointFixture<HongfeiMintedTests> fixture)
         {
             this.fixture = fixture;
             this.chain = fixture.FindChain();
-        }
-
-        [Fact]
-        public void contract_owner_in_storage()
-        {
-            var settings = chain.GetProtocolSettings();
-            var owen = chain.GetDefaultAccount("owen").ToScriptHash(settings.AddressVersion);
-
-            using var snapshot = fixture.GetSnapshot();
-
-            // check to make sure contract owner stored in contract storage
-            var storages = snapshot.GetContractStorages<NeoContributorToken>();
-            storages.Count().Should().Be(1);
-            storages.TryGetValue(Common.CONTRACT_OWNER_KEY, out var item).Should().BeTrue();
-            item!.Should().Be(owen);
         }
 
         [Fact]  
@@ -63,13 +44,29 @@ namespace test
             engine.State.Should().Be(VMState.HALT);
             engine.ResultStack.Should().HaveCount(1);
 
-            // Nep11Token class generates NFT identifiers by combining the script hash of the NFT contract
-            // with a token counter then takes a SHA256 hash of the result.
-            // Since this checkpoint has no NFTs deployed yet, the token ID should be the SHA256 hash of the token script hash.
+            // since this is the second token minted, it's token ID is the contract script hash, incremented by one and sha256 hashed
             var scriptHash = snapshot.GetContractScriptHash<NeoContributorToken>().ToArray();
-            var expectedTokenId = scriptHash.Sha256();
+            var expectedTokenId = (new BigInteger(scriptHash) + 1).ToByteArray().Sha256();
 
             engine.ResultStack.Peek(0).Should().BeEquivalentTo(expectedTokenId.AsSpan());
+        }
+        
+        [Fact]  
+        public void can_get_owner_of()
+        {
+            var settings = chain.GetProtocolSettings();
+            var owen = chain.GetDefaultAccount("owen").ToScriptHash(settings.AddressVersion);
+
+            using var snapshot = fixture.GetSnapshot();
+
+            var scriptHash = snapshot.GetContractScriptHash<NeoContributorToken>();
+            var tokenId = scriptHash.ToArray().Sha256();
+
+            using var engine = new TestApplicationEngine(snapshot, settings);
+            engine.ExecuteScript<NeoContributorToken>(c => c.ownerOf(tokenId));
+            engine.State.Should().Be(VMState.HALT);
+            engine.ResultStack.Should().HaveCount(1);
+            engine.ResultStack.Peek(0).Should().BeEquivalentTo(Neo.UInt160.Zero);
         }
     }
 }

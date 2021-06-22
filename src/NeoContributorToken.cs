@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Numerics;
 using Neo;
 using Neo.SmartContract.Framework;
 using Neo.SmartContract.Framework.Native;
@@ -52,10 +53,8 @@ namespace NgdEnterprise.Samples
 
         public void Update(ByteString nefFile, string manifest)
         {
-            if (!ValidateContractOwner())
-            {
-                throw new Exception("Only the contract owner can update the contract");
-            }
+            if (!ValidateContractOwner()) throw new Exception("Only the contract owner can update the contract");
+
             ContractManagement.Update(nefFile, manifest, null);
         }
 
@@ -65,6 +64,12 @@ namespace NgdEnterprise.Samples
             var contractOwner = (UInt160)Storage.Get(Storage.CurrentContext, key);
             var tx = (Transaction)Runtime.ScriptContainer;
             return contractOwner.Equals(tx.Sender) && Runtime.CheckWitness(contractOwner);
+        }
+
+        public static void OnNEP17Payment(UInt160 from, BigInteger amount, object data)
+        {
+            if (Runtime.CallingScriptHash != NEO.Hash) throw new Exception("Wrong calling script hash");
+            if (amount < 10) throw new Exception("Insufficient payment price");
         }
     }
 }

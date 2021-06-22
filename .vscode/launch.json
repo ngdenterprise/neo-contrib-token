@@ -14,14 +14,14 @@
             "deploy-signer": "@owen"
         },
         {
-            "name": "forge",
+            "name": "mint (succeed)",
             "type": "neo-contract",
             "request": "launch",
             "program": "${workspaceFolder}/src/bin/sc/NeoContributorToken.nef",
             "neo-express": "${workspaceFolder}/default.neo-express",
             "checkpoint": "${workspaceFolder}/checkpoints/contract-deployed.neoxp-checkpoint",
             "invocation": {
-                "operation": "forge",
+                "operation": "mint",
                 "args": [
                     "Da Hongfei",
                     "Founder of Neo, Chair of Neo Foundation, CEO of NGD",
@@ -31,6 +31,62 @@
             "signers": [
                 "@owen"
             ]
-        }
+        },
+        {
+            "name": "mint (fail)",
+            "type": "neo-contract",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/bin/sc/NeoContributorToken.nef",
+            "neo-express": "${workspaceFolder}/default.neo-express",
+            "checkpoint": "${workspaceFolder}/checkpoints/contract-deployed.neoxp-checkpoint",
+            "invocation": {
+                "operation": "mint",
+                "args": [
+                    "Da Hongfei",
+                    "Founder of Neo, Chair of Neo Foundation, CEO of NGD",
+                    "https://neo3.azureedge.net/images/discover/DaHongfei.jpg"
+                ]
+            },
+            "signers": [
+                "@alice"
+            ]
+        },
+        {
+            "name": "mint second (succeed)",
+            "type": "neo-contract",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/bin/sc/NeoContributorToken.nef",
+            "neo-express": "${workspaceFolder}/default.neo-express",
+            "checkpoint": "${workspaceFolder}/checkpoints/hongfei-token-minted.neoxp-checkpoint",
+            "invocation": {
+                "operation": "mint",
+                "args": [
+                    "Erik Zhang",
+                    "Founder and Core developer of Neo, Chair of Neo Foundation",
+                    "https://neo3.azureedge.net/images/discover/ErikZhang.jpg"
+                ]
+            },
+            "signers": [
+                "@owen"
+            ]
+        },
+        {
+            "name": "owner of",
+            "type": "neo-contract",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/bin/sc/NeoContributorToken.nef",
+            "neo-express": "${workspaceFolder}/default.neo-express",
+            "checkpoint": "${workspaceFolder}/checkpoints/hongfei-token-minted.neoxp-checkpoint",
+            "invocation": {
+                "operation": "foo",
+                "args": [
+                    // "0x0CE9114C51C9678BB52647E6D5F521417186B5637261DF48967818C1144EF23B",
+                ]
+            },
+            "signers": [
+                "@owen"
+            ]
+        },
+
     ]
 }
