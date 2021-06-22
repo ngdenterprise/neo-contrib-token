@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <NeoExpressBatchFile>..\setup-express.batch</NeoExpressBatchFile>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Neo.SmartContract.Framework" Version="3.0.0-rc3" />
+    <PackageReference Include="Neo.SmartContract.Framework" Version="3.0.0-rc3fp" />
   </ItemGroup>
 
   <Target Name="ConfigureContractOutputProperties" BeforeTargets="ExecuteNccs">
@@ -26,6 +27,23 @@
     </PropertyGroup>
 
     <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet nccs --debug $(_NccsOptimizeArgument) &quot;$(MSBuildProjectFullPath)&quot;" />
+  </Target>
+
+  <Target Name="ConfigureNeoExpressBatchProperties" BeforeTargets="ExecuteNeoExpressBatch">
+    <PropertyGroup>
+      <_NeoExpressBatchPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(NeoExpressBatchFile)'))</_NeoExpressBatchPath>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="ExecuteNeoExpressBatch" AfterTargets="ExecuteNccs" 
+          Inputs="$(_OutputNeoContractPath);$(_NeoExpressBatchPath)" 
+          Outputs="$(IntermediateOutputPath)neoxp">
+    <PropertyGroup>
+      <_NeoExpressBatchDir>$([System.IO.Path]::GetDirectoryName('$(_NeoExpressBatchPath)'))</_NeoExpressBatchDir>
+    </PropertyGroup>
+
+    <Exec Command="dotnet neoxp batch $(_NeoExpressBatchPath) --reset" WorkingDirectory="$(_NeoExpressBatchDir)" />
+    <Touch Files="$(IntermediateOutputPath)neoxp" AlwaysCreate="true" />
   </Target>
 
 </Project>

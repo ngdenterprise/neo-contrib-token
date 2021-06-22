@@ -4,7 +4,6 @@
     <IsPackable>false</IsPackable>
     <NeoContractManifestPath>..\src\bin\sc\NeoContributorToken.manifest.json</NeoContractManifestPath>
     <NeoContractName>NeoContribToken</NeoContractName>
-    <NeoExpressBatchFile>.\testNeoContributorToken.batch</NeoExpressBatchFile>
     <NeoTestPackagesVersion>1.0.38-preview</NeoTestPackagesVersion>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
@@ -26,6 +25,12 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\src\NeoContributorToken.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+
   <Target Name="ConfigureNeoContractInterface" BeforeTargets="ExecuteNeoContractInterface">
     <PropertyGroup>
       <_NeoContractManifestPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(NeoContractManifestPath)'))</_NeoContractManifestPath>
@@ -39,23 +44,6 @@
 
   <Target Name="ExecuteNeoContractInterface" BeforeTargets="ResolveProjectReferences" Inputs="$(_NeoContractManifestPath)" Outputs="$(_NeoContractInterfacePath)">
     <NeoContractInterface ManifestFile="$(_NeoContractManifestPath)" OutputFile="$(_NeoContractInterfacePath)" RootNamespace="$(RootNamespace)" />
-  </Target>
- 
-  <Target Name="ConfigureNeoExpressBatchProperties" BeforeTargets="ExecuteNeoExpressBatch">
-    <PropertyGroup>
-      <_NeoExpressBatchPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(NeoExpressBatchFile)'))</_NeoExpressBatchPath>
-    </PropertyGroup>
-  </Target>
-
-  <Target Name="ExecuteNeoExpressBatch" AfterTargets="Compile" 
-          Inputs="$(_OutputNeoContractPath);$(_NeoExpressBatchPath)" 
-          Outputs="$(IntermediateOutputPath)neoxp">
-    <PropertyGroup>
-      <_NeoExpressBatchDir>$([System.IO.Path]::GetDirectoryName('$(_NeoExpressBatchPath)'))</_NeoExpressBatchDir>
-    </PropertyGroup>
-
-    <Exec Command="dotnet neoxp batch $(_NeoExpressBatchPath) --reset" WorkingDirectory="$(_NeoExpressBatchDir)" />
-    <Touch Files="$(IntermediateOutputPath)neoxp" AlwaysCreate="true" />
   </Target>
 
 </Project>
