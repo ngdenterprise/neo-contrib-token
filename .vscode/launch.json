@@ -9,7 +9,7 @@
             "type": "neo-contract",
             "request": "launch",
             "program": "${workspaceFolder}/src/bin/sc/NeoContributorToken.nef",
-            "neo-express": "${workspaceFolder}/test/default.neo-express",
+            "neo-express": "${workspaceFolder}/default.neo-express",
             "invocation": "deploy",
             "deploy-signer": "@owen"
         },
@@ -18,8 +18,8 @@
             "type": "neo-contract",
             "request": "launch",
             "program": "${workspaceFolder}/src/bin/sc/NeoContributorToken.nef",
-            "neo-express": "${workspaceFolder}/test/default.neo-express",
-            "checkpoint": "${workspaceFolder}/test/checkpoints/contract-deployed.neoxp-checkpoint",
+            "neo-express": "${workspaceFolder}/default.neo-express",
+            "checkpoint": "${workspaceFolder}/checkpoints/contract-deployed.neoxp-checkpoint",
             "invocation": {
                 "operation": "forge",
                 "args": [
