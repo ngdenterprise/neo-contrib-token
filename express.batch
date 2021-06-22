@@ -1,3 +1,0 @@
-transfer 10000 gas genesis owen
-contract deploy ./src/bin/sc/neo-contrib-contract.nef owen
-checkpoint create ./checkpoints/contract-deployed -f
