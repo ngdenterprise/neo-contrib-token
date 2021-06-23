@@ -4,10 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Neo.BlockchainToolkit3" Version="1.0.51-preview" />
-    <PackageReference Include="Neo.Network.RPC.RpcClient" Version="3.0.0-rc3" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\official\3neo-monorepo\modules\src\RpcClient\RpcClient.csproj" />
+    <PackageReference Include="Neo.BlockchainToolkit3" Version="1.0.51-preview"/>
+    <PackageReference Include="Neo.Network.RPC.RpcClient" Version="3.0.0-rc3"/>
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.1.0"/>
   </ItemGroup>
 </Project>

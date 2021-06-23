@@ -1,49 +1,32 @@
 ﻿using System;
 using System.IO.Abstractions;
-using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Neo;
+using McMaster.Extensions.CommandLineUtils;
+using Microsoft.Extensions.DependencyInjection;
 using Neo.BlockchainToolkit;
-using Neo.Network.RPC;
 
 namespace client
 {
-
+    [Command("neoctb-client")]
+    [Subcommand(typeof(ListCommand))]
     class Program
     {
-        static IFileSystem fs = new FileSystem();
-
-        static async Task Main(string[] args)
+        public static Task<int> Main(string[] args)
         {
-            // load neo express file so we can determin RPC port + protocol settings
-            var chain = fs.LoadChain(@"..\default.neo-express");
-            var settings = chain.GetProtocolSettings();
-            var rpcClient = new RpcClient(new Uri($"http://localhost:{chain.ConsensusNodes.First().RpcPort}"), protocolSettings: settings);
+            var chain = new FileSystem().LoadChain(@"..\default.neo-express");
 
-            // List the deployed contracts (neo-express custom functionality) and find the NeoContributorToken script hash
-            var contracts = await rpcClient.ListContractsAsync();
-            var contractHash = contracts["NeoContributorToken"];
+            var services = new ServiceCollection()
+                .AddSingleton(chain)
+                .AddSingleton<IConsole>(PhysicalConsole.Singleton)
+                .BuildServiceProvider();
 
-            // print the list of minted tokens
-            var tokensOf = await rpcClient.TokensAsync(contractHash);
-            for (int i = 0; i < tokensOf.Length; i++)
-            {
-                // retrieve properties of NFT
-                var props = await rpcClient.PropertiesAsync(contractHash, tokensOf[i]);
+            var app = new CommandLineApplication<Program>();
+            app.Conventions
+                .UseDefaultConventions()
+                .UseConstructorInjection(services);
 
-                // Convert NFT properties to readable types
-                var owner = new UInt160(props["owner"].GetSpan());
-                var name = props["name"].GetString();
-                var description = props["description"].GetString();
-
-                // Write token info to console
-                Console.WriteLine($"{i + 1}. {name} ({description})");
-                if (owner == UInt160.Zero)
-                    Console.WriteLine($"\tAvailable");
-                else
-                    Console.WriteLine($"\tOwned By {Neo.Wallets.Helper.ToAddress(owner, settings.AddressVersion)}");
-                Console.WriteLine($"\tToken ID: {Convert.ToHexString(tokensOf[i].GetSpan())}");
-            }
+            return app.ExecuteAsync(args);
         }
     }
 }

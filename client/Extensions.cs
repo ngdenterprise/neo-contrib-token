@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Neo;
+using Neo.BlockchainToolkit;
+using Neo.BlockchainToolkit.Models;
 using Neo.IO.Json;
 using Neo.Network.RPC;
 using Neo.Network.RPC.Models;
@@ -12,8 +14,13 @@ namespace client
 {
     static class Extensions
     {
-        // work around https://github.com/neo-project/neo-devpack-dotnet/issues/647
+        public static RpcClient GetRpcClient(this ExpressChain chain)
+        {
+            var settings = chain.GetProtocolSettings();
+            return new RpcClient(new Uri($"http://localhost:{chain.ConsensusNodes.First().RpcPort}"), protocolSettings: settings);
+        }
 
+        // work around https://github.com/neo-project/neo-devpack-dotnet/issues/647
         static async Task<RpcInvokeResult> InvokeIteratorScriptAsync(this RpcClient rpcClient, byte[] script, params Neo.Network.P2P.Payloads.Signer[] signers)
         {
             List<JObject> parameters = new List<JObject> { Convert.ToBase64String(script) };

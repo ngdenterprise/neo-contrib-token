@@ -5,13 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "cli-client",
+            "name": "cli-client list",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build-client",
             "program": "${workspaceFolder}/client/bin/Debug/net5.0/client.dll",
-            "args": [
-            ],
+            "args": "list",
             "cwd": "${workspaceFolder}/client",
             "console": "internalConsole",
             "stopAtEntry": false
