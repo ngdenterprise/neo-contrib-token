@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO.Abstractions;
+﻿using System.IO.Abstractions;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
@@ -9,7 +8,7 @@ using Neo.BlockchainToolkit;
 namespace client
 {
     [Command("neoctb-client")]
-    [Subcommand(typeof(ListCommand))]
+    [Subcommand(typeof(BuyCommand), typeof(ListCommand))]
     class Program
     {
         public static Task<int> Main(string[] args)
