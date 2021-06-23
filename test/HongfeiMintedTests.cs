@@ -87,5 +87,27 @@ namespace test
             engine.ResultStack.Should().HaveCount(1);
             engine.ResultStack.Peek(0).Should().BeEquivalentTo(Neo.UInt160.Zero);
         }
+
+        [Fact]  
+        public void can_iterate_tokens()
+        {
+            var settings = chain.GetProtocolSettings();
+
+            using var snapshot = fixture.GetSnapshot();
+            var expectedTokenId = snapshot.CalculateTokenId();
+
+            using var engine = new TestApplicationEngine(snapshot, settings);
+            engine.ExecuteScript<NeoContributorToken>(c => c.tokens());
+
+            engine.State.Should().Be(VMState.HALT);
+            engine.ResultStack.Should().HaveCount(1);
+            var result1 = engine.ResultStack.Peek(0);
+            result1.Should().BeOfType<Neo.VM.Types.InteropInterface>();
+            var iterator = result1.GetInterface<Neo.SmartContract.Iterators.IIterator>();
+            iterator.Should().NotBeNull();
+            var iteratorList = iterator.ToList();
+            iteratorList.Count.Should().Be(1);
+            iteratorList[0].Should().BeEquivalentTo(expectedTokenId.AsSpan());
+        }
     }
 }

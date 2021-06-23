@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Numerics;
 using Neo.Cryptography;
 using Neo.IO;
@@ -22,5 +23,16 @@ namespace test
             }
             return scriptHash.Sha256();
         }
+
+        public static IReadOnlyList<Neo.VM.Types.StackItem> ToList(this Neo.SmartContract.Iterators.IIterator iterator)
+        {
+            var list = new List<Neo.VM.Types.StackItem>();
+            while (iterator.Next())
+            {
+                list.Add(iterator.Value());
+            }
+            return list;
+        }
+
     }
 }

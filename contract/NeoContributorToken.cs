@@ -26,6 +26,18 @@ namespace NgdEnterprise.Samples
 
         public override string Symbol() => "NEOCNTRB";
 
+        public override Map<string, object> Properties(ByteString tokenId)
+        {
+            StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
+            TokenState token = (TokenState)StdLib.Deserialize(tokenMap[tokenId]);
+            Map<string, object> map = new();
+            map["owner"] = token.Owner;
+            map["name"] = token.Name;
+            map["description"] = token.Description;
+            map["image"] = token.Image;
+            return map;
+        }
+
         public ByteString Mint(string name, string description, string image)
         {
             if (!ValidateContractOwner()) throw new Exception("Only the contract owner can mint tokens");

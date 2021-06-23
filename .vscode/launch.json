@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "cli-client",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-client",
+            "program": "${workspaceFolder}/client/bin/Debug/net5.0/client.dll",
+            "args": [
+            ],
+            "cwd": "${workspaceFolder}/client",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
             "name": "deploy",
             "type": "neo-contract",
             "request": "launch",
