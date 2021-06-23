@@ -4,9 +4,15 @@ transfer 10000 neo genesis alice
 
 contract deploy ./contract/bin/sc/NeoContributorToken.nef owen
 checkpoint create ./checkpoints/contract-deployed -f
+
 contract invoke ./invoke-files/mint-hongfei.neo-invoke.json owen
 checkpoint create ./checkpoints/hongfei-token-minted -f
+
 contract invoke ./invoke-files/mint-erik.neo-invoke.json owen
 checkpoint create ./checkpoints/erik-token-minted -f
+
 contract invoke ./invoke-files/mint-john.neo-invoke.json owen
 checkpoint create ./checkpoints/john-token-minted -f
+
+# contract invoke ./invoke-files/buy-hongfei-nft.json alice
+# checkpoint create ./checkpoints/hongfei-token-bought -f
