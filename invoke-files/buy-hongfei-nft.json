@@ -1,0 +1,12 @@
+[
+  {
+    "contract": "NeoToken",
+    "operation": "transfer",
+    "args": [
+      "@alice",
+      "#NeoContributorToken",
+      10,
+      "0x3de216101cf594fbbb43cf99e6ed3fc54afb2e4bbd10f88ba5fa4169b648c923"
+    ]
+  }
+]

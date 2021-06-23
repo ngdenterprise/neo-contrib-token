@@ -56,19 +56,12 @@ namespace test
 
             using var snapshot = fixture.GetSnapshot();
             using var engine = new TestApplicationEngine(snapshot, settings, owen);
-            var logs = new List<string>();
-            engine.Log += (sender, args) => { logs.Add(args.Message); };
 
             engine.ExecuteScript<NeoContributorToken>(c => c.mint("Test Contributor", "Test Description", "https://i.picsum.photos/id/856/500/500.jpg?hmac=BOzGgyuyo7weE0xNPxJ_8cw3I7oWUwIiHRN_Y51EoNs"));
             engine.State.Should().Be(VMState.HALT);
             engine.ResultStack.Should().HaveCount(1);
 
-            // Nep11Token class generates NFT identifiers by combining the script hash of the NFT contract
-            // with a token counter then takes a SHA256 hash of the result.
-            // Since this checkpoint has no NFTs deployed yet, the token ID should be the SHA256 hash of the token script hash.
-            var scriptHash = snapshot.GetContractScriptHash<NeoContributorToken>().ToArray();
-            var expectedTokenId = scriptHash.Sha256();
-
+            var expectedTokenId = snapshot.CalculateTokenId();
             engine.ResultStack.Peek(0).Should().BeEquivalentTo(expectedTokenId.AsSpan());
         }
     }

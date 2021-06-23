@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Numerics;
 using Neo;
+using Neo.SmartContract;
 using Neo.SmartContract.Framework;
 using Neo.SmartContract.Framework.Native;
 using Neo.SmartContract.Framework.Services;
@@ -21,7 +22,7 @@ namespace NgdEnterprise.Samples
             public string Image;
         }
 
-        const byte Prefix_Contract_Owner = 0xFF;
+        const byte Prefix_ContractOwner = 0xFF;
 
         public override string Symbol() => "NEOCNTRB";
 
@@ -29,7 +30,7 @@ namespace NgdEnterprise.Samples
         {
             if (!ValidateContractOwner()) throw new Exception("Only the contract owner can mint tokens");
 
-            var tokenId = NewTokenId();
+            var tokenId = NewTokenId(nameof(NeoContributorToken));
             var tokenState = new NeoContributorToken.TokenState
             {
                 Owner = UInt160.Zero,
@@ -41,13 +42,23 @@ namespace NgdEnterprise.Samples
             return tokenId;
         }
 
+        protected static ByteString NewTokenId(ByteString data)
+        {
+            StorageContext context = Storage.CurrentContext;
+            byte[] key = new byte[] { Prefix_TokenId };
+            ByteString id = Storage.Get(context, key);
+            Storage.Put(context, key, (BigInteger)id + 1);
+            if (id is not null) data += id;
+            return CryptoLib.Sha256(data);
+        }
+
         [DisplayName("_deploy")]
         public void Deploy(object data, bool update)
         {
             if (update) return;
 
             var tx = (Transaction)Runtime.ScriptContainer;
-            var key = new byte[] { Prefix_Contract_Owner };
+            var key = new byte[] { Prefix_ContractOwner };
             Storage.Put(Storage.CurrentContext, key, tx.Sender);
         }
 
@@ -60,16 +71,34 @@ namespace NgdEnterprise.Samples
 
         private bool ValidateContractOwner()
         {
-            var key = new byte[] { Prefix_Contract_Owner };
+            var key = new byte[] { Prefix_ContractOwner };
             var contractOwner = (UInt160)Storage.Get(Storage.CurrentContext, key);
             var tx = (Transaction)Runtime.ScriptContainer;
             return contractOwner.Equals(tx.Sender) && Runtime.CheckWitness(contractOwner);
         }
 
-        public static void OnNEP17Payment(UInt160 from, BigInteger amount, object data)
-        {
-            if (Runtime.CallingScriptHash != NEO.Hash) throw new Exception("Wrong calling script hash");
-            if (amount < 10) throw new Exception("Insufficient payment price");
-        }
+        // public void OnNEP17Payment(UInt160 from, BigInteger amount, ByteString tokenId)
+        // {
+        //     if (Runtime.CallingScriptHash != NEO.Hash) throw new Exception("Wrong calling script hash");
+
+        //     // var availableToken = GetAvailableToken(tokenId);
+        //     // if (availableToken == null) throw new Exception("Invalid token id");
+        //     // if (amount < availableToken.Price) throw new Exception("Insufficient payment price");
+
+
+
+        //     // NEO.Transfer(Runtime.ExecutingScriptHash, )
+
+
+        //     // if (amount < 10) 
+
+        //     // StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
+        //     // var serToken = tokenMap[tokenId];
+        //     // if (serToken == null) throw new 
+        //     // var token = (NeoContributorToken.TokenState)StdLib.Deserialize(serToken);
+        //     // if (token.Owner != UInt160.Zero) throw new Exception("Specified token already owned");
+
+        //     // Transfer(from, tokenId, null);
+        // }
     }
 }
