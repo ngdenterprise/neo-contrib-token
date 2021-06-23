@@ -2,7 +2,7 @@ transfer 10000 gas genesis owen
 transfer 10000 gas genesis alice
 transfer 10000 neo genesis alice
 
-contract deploy ./src/bin/sc/NeoContributorToken.nef owen
+contract deploy ./contract/bin/sc/NeoContributorToken.nef owen
 checkpoint create ./checkpoints/contract-deployed -f
 contract invoke ./invoke-files/mint-hongfei.neo-invoke.json owen
 checkpoint create ./checkpoints/hongfei-token-minted -f
