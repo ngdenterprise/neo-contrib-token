@@ -166,6 +166,9 @@
             "invocation": {
                 "invoke-file": "${workspaceFolder}/invoke-files/buy-listed-nft.neo-invoke.json"
             },
+            "signers": [
+                "@bob"
+            ]
         },
         {
             "name": "buy-listed-nft (2)",
@@ -177,6 +180,9 @@
             "invocation": {
                 "invoke-file": "${workspaceFolder}/invoke-files/buy-listed-nft.neo-invoke.json"
             },
+            "signers": [
+                "@bob"
+            ]
         },
         {
             "name": "cancel-listing",
