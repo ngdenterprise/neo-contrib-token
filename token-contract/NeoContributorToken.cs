@@ -92,12 +92,24 @@ namespace NgdEnterprise.Samples
 
         public static bool Transfer(UInt160 to, ByteString tokenId, object data)
         {
-            if (to is null || !to.IsValid)
-                throw new Exception("The argument \"to\" is invalid.");
+            if (to is null || !to.IsValid) throw new Exception("The argument \"to\" is invalid.");
+
             StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
-            TokenState token = (TokenState)StdLib.Deserialize(tokenMap[tokenId]);
+            var tokenData = tokenMap[tokenId];
+            if (tokenData == null)
+            {
+                Runtime.Log("Invalid tokenId");
+                return false;
+            }
+
+            TokenState token = (TokenState)StdLib.Deserialize(tokenData);
             UInt160 from = token.Owner;
-            if (from != UInt160.Zero && !Runtime.CheckWitness(from)) return false;
+            if (from != UInt160.Zero && !Runtime.CheckWitness(from))
+            {
+                Runtime.Log("only the token owner can transfer it");
+                return false;
+            }
+
             if (from != to)
             {
                 token.Owner = to;
@@ -109,11 +121,20 @@ namespace NgdEnterprise.Samples
             return true;
         }
 
-        public static ByteString Mint(string name, string description, string image)
+        public static UInt256 Mint(string name, string description, string image)
         {
             if (!ValidateContractOwner()) throw new Exception("Only the contract owner can mint tokens");
 
-            var tokenId = NewTokenId(nameof(NeoContributorToken));
+            // generate new token ID
+            StorageContext context = Storage.CurrentContext;
+            byte[] key = new byte[] { Prefix_TokenId };
+            ByteString id = Storage.Get(context, key);
+            Storage.Put(context, key, (BigInteger)id + 1);
+
+            ByteString data = nameof(NeoContributorToken);
+            if (id is not null) data += id;
+            var tokenId = (UInt256)CryptoLib.Sha256(data);
+
             var tokenState = new NeoContributorToken.TokenState
             {
                 Owner = UInt160.Zero,
@@ -121,7 +142,13 @@ namespace NgdEnterprise.Samples
                 Description = description,
                 Image = image,
             };
-            Mint(tokenId, tokenState);
+
+            StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
+            tokenMap[tokenId] = StdLib.Serialize(tokenState);
+            UpdateBalance(tokenState.Owner, tokenId, +1);
+            UpdateTotalSupply(+1);
+            PostTransfer(null, tokenState.Owner, tokenId, null);
+
             return tokenId;
         }
 
@@ -134,6 +161,24 @@ namespace NgdEnterprise.Samples
             if (balance <= 0) return false;
 
             return NEO.Transfer(Runtime.ExecutingScriptHash, to, balance);
+        }
+
+        public static void OnNEP17Payment(UInt160 from, BigInteger amount, object data)
+        {
+            if (data != null)
+            {
+                var tokenId = (ByteString)data;
+                if (Runtime.CallingScriptHash != NEO.Hash) throw new Exception("Wrong calling script hash");
+                if (amount < 10) throw new Exception("Insufficient payment price");
+
+                StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
+                var serToken = tokenMap[tokenId];
+                if (serToken == null) throw new Exception("Invalid token id"); 
+                var token = (NeoContributorToken.TokenState)StdLib.Deserialize(serToken);
+                if (token.Owner != UInt160.Zero) throw new Exception("Specified token already owned");
+
+                if (!Transfer(from, tokenId, null)) throw new Exception("Transfer Failed");
+            }
         }
 
         [DisplayName("_deploy")]
@@ -153,23 +198,6 @@ namespace NgdEnterprise.Samples
             ContractManagement.Update(nefFile, manifest, null);
         }
 
-        public static void OnNEP17Payment(UInt160 from, BigInteger amount, ByteString tokenId)
-        {
-            if (tokenId != null)
-            {
-                if (Runtime.CallingScriptHash != NEO.Hash) throw new Exception("Wrong calling script hash");
-                if (amount < 10) throw new Exception("Insufficient payment price");
-
-                StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
-                var serToken = tokenMap[tokenId];
-                if (serToken == null) throw new Exception("Invalid token id"); 
-                var token = (NeoContributorToken.TokenState)StdLib.Deserialize(serToken);
-                if (token.Owner != UInt160.Zero) throw new Exception("Specified token already owned");
-
-                if (!Transfer(from, tokenId, null)) throw new Exception("Transfer Failed");
-            }
-        }
-
         static void UpdateTotalSupply(BigInteger increment)
         {
             StorageContext context = Storage.CurrentContext;
@@ -179,51 +207,19 @@ namespace NgdEnterprise.Samples
             Storage.Put(context, key, totalSupply);
         }
 
-        static bool UpdateBalance(UInt160 owner, BigInteger increment)
+        static void UpdateBalance(UInt160 owner, ByteString tokenId, int increment)
         {
             StorageMap balanceMap = new(Storage.CurrentContext, Prefix_Balance);
             BigInteger balance = (BigInteger)balanceMap[owner];
             balance += increment;
-            if (balance < 0) return false;
-            if (balance.IsZero)
-                balanceMap.Delete(owner);
-            else
-                balanceMap.Put(owner, balance);
-            return true;
-        }
+            if (balance >= 0)
+            {
+                if (balance.IsZero)
+                    balanceMap.Delete(owner);
+                else
+                    balanceMap.Put(owner, balance);
+            }
 
-        static ByteString NewTokenId(ByteString data)
-        {
-            StorageContext context = Storage.CurrentContext;
-            byte[] key = new byte[] { Prefix_TokenId };
-            ByteString id = Storage.Get(context, key);
-            Storage.Put(context, key, (BigInteger)id + 1);
-            if (id is not null) data += id;
-            return CryptoLib.Sha256(data);
-        }
-
-        static void Mint(ByteString tokenId, TokenState token)
-        {
-            StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
-            tokenMap[tokenId] = StdLib.Serialize(token);
-            UpdateBalance(token.Owner, tokenId, +1);
-            UpdateTotalSupply(+1);
-            PostTransfer(null, token.Owner, tokenId, null);
-        }
-
-        static void Burn(ByteString tokenId)
-        {
-            StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
-            TokenState token = (TokenState)StdLib.Deserialize(tokenMap[tokenId]);
-            tokenMap.Delete(tokenId);
-            UpdateBalance(token.Owner, tokenId, -1);
-            UpdateTotalSupply(-1);
-            PostTransfer(token.Owner, null, tokenId, null);
-        }
-
-        static void UpdateBalance(UInt160 owner, ByteString tokenId, int increment)
-        {
-            UpdateBalance(owner, increment);
             StorageMap accountMap = new(Storage.CurrentContext, Prefix_AccountToken);
             ByteString key = owner + tokenId;
             if (increment > 0)
