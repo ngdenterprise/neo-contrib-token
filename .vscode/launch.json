@@ -125,7 +125,7 @@
             "neo-express": "${workspaceFolder}/default.neo-express",
             "checkpoint": "${workspaceFolder}/checkpoints/hongfei-token-bought.neoxp-checkpoint",
             "invocation": {
-                "operation": "withdrawNEO",
+                "operation": "withdraw",
                 "args": [
                     "@owen"
                 ]

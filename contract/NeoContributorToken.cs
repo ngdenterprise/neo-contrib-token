@@ -131,6 +131,8 @@ namespace NgdEnterprise.Samples
             if (to == UInt160.Zero || !to.IsValid) throw new Exception("Invalid withrdrawl address");
 
             var balance = NEO.BalanceOf(Runtime.ExecutingScriptHash);
+            if (balance <= 0) return false;
+
             return NEO.Transfer(Runtime.ExecutingScriptHash, to, balance);
         }
 
