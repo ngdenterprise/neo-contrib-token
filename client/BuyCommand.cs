@@ -19,6 +19,9 @@ namespace client
         [Argument(1)]
         internal string Account { get; init; } = string.Empty;
 
+        [Option]
+        internal bool Wait { get; init; } = false;
+
         internal async Task<int> OnExecuteAsync(ExpressChain chain, IConsole console, CancellationToken token)
         {
             try
@@ -31,36 +34,32 @@ namespace client
                 var contracts = await rpcClient.ListContractsAsync();
                 var contractHash = contracts["NeoContributorToken"];
 
-                var tokenId = Convert.FromHexString(TokenId);
+                // retrieve the private key for the specified account from neo express file
                 var wallet = chain.Wallets.SingleOrDefault(w => w.Name.Equals(Account, StringComparison.OrdinalIgnoreCase));
                 var keyPair = new KeyPair(Convert.FromHexString(wallet.DefaultAccount.PrivateKey));
 
+                // Transfer 10 neo to the NeoContributorToken, passing in the desired tokenId as the data parameter
+                var tokenId = Convert.FromHexString(TokenId);
                 var tx = await walletApi.TransferAsync(NativeContract.NEO.Hash, keyPair, contractHash, 10, tokenId);
-                var rpcTx = await walletApi.WaitTransactionAsync(tx);
 
+                if (Wait)
+                {
+                    // wait for the tx to execute
+                    var rpcTx = await walletApi.WaitTransactionAsync(tx);
+                    var appLog = await rpcClient.GetApplicationLogAsync(tx.Hash.ToString());
 
-                // // print the list of minted tokens
-                // var tokensOf = await rpcClient.TokensAsync(contractHash);
-                // for (int i = 0; i < tokensOf.Length; i++)
-                // {
-                //     // retrieve properties of NFT
-                //     var props = await rpcClient.PropertiesAsync(contractHash, tokensOf[i]);
+                    var exec = appLog.Executions.Single();
+                    var result = exec.VMState == Neo.VM.VMState.HALT && exec.Stack.Single().GetBoolean() 
+                        ? "succeeded" 
+                        : "failed";
 
-                //     // Convert NFT properties to readable types
-                //     var owner = new UInt160(props["owner"].GetSpan());
-                //     var name = props["name"].GetString();
-                //     var description = props["description"].GetString();
-                //     var image = props["image"].GetString();
-
-                //     // Write token info to console
-                //     console.WriteLine($"{i + 1}. {name} ({description})");
-                //     console.WriteLine($"\t{image}");
-                //     if (owner == UInt160.Zero)
-                //         console.WriteLine($"\tAvailable");
-                //     else
-                //         console.WriteLine($"\tOwned By {Neo.Wallets.Helper.ToAddress(owner, chain.AddressVersion)}");
-                //     console.WriteLine($"\tToken ID: {Convert.ToHexString(tokensOf[i].GetSpan())}");
-                // }
+                    console.WriteLine($"Transfer of token {TokenId} {result}");
+                    console.WriteLine($"Gas Consumed: {exec.GasConsumed}");
+                }
+                else
+                {
+                    console.WriteLine($"Transfer Transaction Hash {tx.Hash}");
+                }
 
                 return 0;
             }

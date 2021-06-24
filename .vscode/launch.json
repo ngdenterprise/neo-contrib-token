@@ -27,6 +27,17 @@
             "stopAtEntry": false
         },
         {
+            "name": "client buy --wait",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-client",
+            "program": "${workspaceFolder}/client/bin/Debug/net5.0/client.dll",
+            "args": "buy 3DE216101CF594FBBB43CF99E6ED3FC54AFB2E4BBD10F88BA5FA4169B648C923 alice --wait",
+            "cwd": "${workspaceFolder}/client",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
             "name": "deploy",
             "type": "neo-contract",
             "request": "launch",
@@ -106,6 +117,5 @@
                 "@alice"
             ]
         },
-
     ]
 }
