@@ -20,9 +20,7 @@
             "type": "shell",
             "args": [
                 "build",
-                // Ask dotnet build to generate full paths for file names.
                 "/property:GenerateFullPaths=true",
-                // Do not generate summary otherwise it leads to duplicate errors in Problems panel
                 "/consoleloggerparameters:NoSummary"
             ],
             "group": "build",
@@ -35,12 +33,32 @@
             "label": "build-client",
             "command": "dotnet",
             "type": "shell",
-            "args": ["build", "./client"],
+            "args": [
+                "build",
+                "./client"
+            ],
             "group": "build",
             "presentation": {
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "reset-neo-express",
+            "dependsOn": "build",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "neoxp",
+                "batch",
+                "setup-express.batch",
+                "--reset"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": []
         }
     ]
 }

@@ -30,7 +30,7 @@ namespace NgdEnterprise.Samples
 
         public delegate void OnListingRemovedDelegate(ByteString listingId, UInt160 newOwner);
 
-        [DisplayName("ListingCreated")]
+        [DisplayName("ListingRemoved")]
         public static event OnListingRemovedDelegate OnListingRemoved;
 
         const byte Prefix_Listing = 0x00;

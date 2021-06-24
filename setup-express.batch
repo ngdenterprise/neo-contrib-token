@@ -1,21 +1,19 @@
 transfer 10000 gas genesis owen
-transfer 10000 gas genesis alice
+transfer 10000 gas genesis steve
+
 transfer 10000 neo genesis alice
+transfer 10000 gas genesis alice
+
+transfer 10000 neo genesis bob
+transfer 10000 gas genesis bob
 
 contract deploy ./token-contract/bin/sc/NeoContributorToken.nef owen
-checkpoint create ./checkpoints/contract-deployed -f
+contract deploy ./store-contract/bin/sc/DemoShopContract.nef steve
+checkpoint create ./checkpoints/contracts-deployed -f
 
 contract invoke ./invoke-files/mint-hongfei.neo-invoke.json owen
 checkpoint create ./checkpoints/hongfei-token-minted -f
 
-contract invoke ./invoke-files/mint-erik.neo-invoke.json owen
-checkpoint create ./checkpoints/erik-token-minted -f
-
+ contract invoke ./invoke-files/mint-erik.neo-invoke.json owen
 contract invoke ./invoke-files/mint-john.neo-invoke.json owen
-checkpoint create ./checkpoints/john-token-minted -f
-
-contract invoke ./invoke-files/buy-hongfei-nft.json alice
-checkpoint create ./checkpoints/hongfei-token-bought -f
-
-contract invoke ./invoke-files/withdraw.neo-invoke.json owen
-checkpoint create ./checkpoints/neo-withdrawn -f
+checkpoint create ./checkpoints/tokens-minted -f

@@ -21,7 +21,7 @@ using Neo.Cryptography;
 
 namespace test
 {
-    [CheckpointPath("checkpoints/contract-deployed.neoxp-checkpoint")]
+    [CheckpointPath("checkpoints/contracts-deployed.neoxp-checkpoint")]
     public class ContractDeployedTests : IClassFixture<CheckpointFixture<ContractDeployedTests>>
     {
         readonly CheckpointFixture fixture;

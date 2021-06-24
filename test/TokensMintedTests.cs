@@ -4,27 +4,22 @@ using Neo.BlockchainToolkit;
 using Neo.BlockchainToolkit.Models;
 using Neo.SmartContract;
 using Neo.VM;
-using System.Linq;
 using NeoTestHarness;
 using FluentAssertions;
 using testNeoContributorToken;
 using Neo.Assertions;
 using Neo.BlockchainToolkit.SmartContract;
-using System.Collections.Generic;
-using Neo.IO;
-using Neo.Cryptography;
-using System.Numerics;
 using Neo.SmartContract.Native;
 
 namespace test
 {
-    [CheckpointPath("checkpoints/hongfei-token-minted.neoxp-checkpoint")]
-    public class HongfeiMintedTests : IClassFixture<CheckpointFixture<HongfeiMintedTests>>
+    [CheckpointPath("checkpoints/tokens-minted.neoxp-checkpoint")]
+    public class TokensMintedTests : IClassFixture<CheckpointFixture<TokensMintedTests>>
     {
         readonly CheckpointFixture fixture;
         readonly ExpressChain chain;
 
-        public HongfeiMintedTests(CheckpointFixture<HongfeiMintedTests> fixture)
+        public TokensMintedTests(CheckpointFixture<TokensMintedTests> fixture)
         {
             this.fixture = fixture;
             this.chain = fixture.FindChain();
@@ -44,7 +39,7 @@ namespace test
             engine.ResultStack.Should().HaveCount(1);
 
             // since this is the second token minted, it's token ID is the contract script hash, incremented by one and sha256 hashed
-            var expectedTokenId = snapshot.CalculateTokenId(1);
+            var expectedTokenId = snapshot.CalculateTokenId(3);
 
             engine.ResultStack.Peek(0).Should().BeEquivalentTo(expectedTokenId.AsSpan());
         }
@@ -106,8 +101,7 @@ namespace test
             var iterator = result1.GetInterface<Neo.SmartContract.Iterators.IIterator>();
             iterator.Should().NotBeNull();
             var iteratorList = iterator.ToList();
-            iteratorList.Count.Should().Be(1);
-            iteratorList[0].Should().BeEquivalentTo(expectedTokenId.AsSpan());
+            iteratorList.Count.Should().Be(3);
         }
     }
 }

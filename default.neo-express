@@ -88,6 +88,23 @@
           }
         }
       ]
+    },
+    {
+      "name": "steve",
+      "accounts": [
+        {
+          "private-key": "8ed68644f629dc0fa1b25ff27ecf6a09e37ded8142e22d31e5e790152b3a08c2",
+          "script-hash": "NUte7HnDiDEzWVZMNVsHw93yeyx4rjcQfp",
+          "label": null,
+          "is-default": true,
+          "contract": {
+            "script": "0c2102d10eebf5f7a1d2330cb4c1c8d3231f1111223f3c75c78be5d0d048fa65693e1d4156e7b327",
+            "parameters": [
+              "Signature"
+            ]
+          }
+        }
+      ]
     }
   ],
   "settings": {}
