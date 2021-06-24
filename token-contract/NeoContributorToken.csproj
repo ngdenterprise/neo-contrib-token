@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <NeoExpressBatchFile>..\setup-express.batch</NeoExpressBatchFile>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
@@ -12,9 +11,9 @@
   <Target Name="ConfigureContractOutputProperties" BeforeTargets="ExecuteNccs">
     <PropertyGroup>
       <_NccsOutputDirectory>bin\sc</_NccsOutputDirectory>
-      <_OutputNeoContractPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(_NccsOutputDirectory)', '$(NeoContractName).nef'))</_OutputNeoContractPath>
-      <_OutputNeoContractManifestPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(_NccsOutputDirectory)', '$(NeoContractName).manifest.json'))</_OutputNeoContractManifestPath>
-      <_OutputNeoContractDebugInfoPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(_NccsOutputDirectory)', '$(NeoContractName).nefdbgnfo'))</_OutputNeoContractDebugInfoPath>
+      <_OutputNeoContractPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(_NccsOutputDirectory)', '$(AssemblyName).nef'))</_OutputNeoContractPath>
+      <_OutputNeoContractManifestPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(_NccsOutputDirectory)', '$(AssemblyName).manifest.json'))</_OutputNeoContractManifestPath>
+      <_OutputNeoContractDebugInfoPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(_NccsOutputDirectory)', '$(AssemblyName).nefdbgnfo'))</_OutputNeoContractDebugInfoPath>
     </PropertyGroup>
   </Target>
 
@@ -26,24 +25,11 @@
       <_NccsOptimizeArgument Condition="'$(Configuration)'!='Debug'"></_NccsOptimizeArgument>
     </PropertyGroup>
 
-    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet nccs --debug $(_NccsOptimizeArgument) &quot;$(MSBuildProjectFullPath)&quot;" />
+    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet nccs --contract-name $(AssemblyName) --debug $(_NccsOptimizeArgument) &quot;$(MSBuildProjectFullPath)&quot;" />
   </Target>
 
-  <!-- <Target Name="ConfigureNeoExpressBatchProperties" BeforeTargets="ExecuteNeoExpressBatch">
-    <PropertyGroup>
-      <_NeoExpressBatchPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(NeoExpressBatchFile)'))</_NeoExpressBatchPath>
-    </PropertyGroup>
+  <Target Name="EchoNccsOutput" AfterTargets="CopyFilesToOutputDirectory" >
+    <Message Text="$(AssemblyName) Contract -> $(_OutputNeoContractPath)" Importance="high" />
   </Target>
-
-  <Target Name="ExecuteNeoExpressBatch" AfterTargets="ExecuteNccs" 
-          Inputs="$(_OutputNeoContractPath);$(_NeoExpressBatchPath)" 
-          Outputs="$(IntermediateOutputPath)neoxp">
-    <PropertyGroup>
-      <_NeoExpressBatchDir>$([System.IO.Path]::GetDirectoryName('$(_NeoExpressBatchPath)'))</_NeoExpressBatchDir>
-    </PropertyGroup>
-
-    <Exec Command="dotnet neoxp batch $(_NeoExpressBatchPath) - -reset" WorkingDirectory="$(_NeoExpressBatchDir)" />
-    <Touch Files="$(IntermediateOutputPath)neoxp" AlwaysCreate="true" />
-  </Target> -->
 
 </Project>
