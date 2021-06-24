@@ -117,5 +117,21 @@
                 "@alice"
             ]
         },
-    ]
+        {
+            "name": "withdraw-neo",
+            "type": "neo-contract",
+            "request": "launch",
+            "program": "${workspaceFolder}/contract/bin/sc/NeoContributorToken.nef",
+            "neo-express": "${workspaceFolder}/default.neo-express",
+            "checkpoint": "${workspaceFolder}/checkpoints/hongfei-token-bought.neoxp-checkpoint",
+            "invocation": {
+                "operation": "withdrawNEO",
+                "args": [
+                    "@owen"
+                ]
+            },
+            "signers": [
+                "@owen"
+            ]
+        },    ]
 }

@@ -109,7 +109,7 @@ namespace NgdEnterprise.Samples
             return true;
         }
 
-        public ByteString Mint(string name, string description, string image)
+        public static ByteString Mint(string name, string description, string image)
         {
             if (!ValidateContractOwner()) throw new Exception("Only the contract owner can mint tokens");
 
@@ -123,6 +123,15 @@ namespace NgdEnterprise.Samples
             };
             Mint(tokenId, tokenState);
             return tokenId;
+        }
+
+        public bool Withdraw(UInt160 to)
+        {
+            if (!ValidateContractOwner()) throw new Exception("Only the contract owner can withdraw NEO");
+            if (to == UInt160.Zero || !to.IsValid) throw new Exception("Invalid withrdrawl address");
+
+            var balance = NEO.BalanceOf(Runtime.ExecutingScriptHash);
+            return NEO.Transfer(Runtime.ExecutingScriptHash, to, balance);
         }
 
         [DisplayName("_deploy")]
@@ -142,20 +151,22 @@ namespace NgdEnterprise.Samples
             ContractManagement.Update(nefFile, manifest, null);
         }
 
-        public void OnNEP17Payment(UInt160 from, BigInteger amount, ByteString tokenId)
+        public static void OnNEP17Payment(UInt160 from, BigInteger amount, ByteString tokenId)
         {
-            if (Runtime.CallingScriptHash != NEO.Hash) throw new Exception("Wrong calling script hash");
-            if (amount < 10) throw new Exception("Insufficient payment price");
+            if (tokenId != null)
+            {
+                if (Runtime.CallingScriptHash != NEO.Hash) throw new Exception("Wrong calling script hash");
+                if (amount < 10) throw new Exception("Insufficient payment price");
 
-            StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
-            var serToken = tokenMap[tokenId];
-            if (serToken == null) throw new Exception("Invalid token id"); 
-            var token = (NeoContributorToken.TokenState)StdLib.Deserialize(serToken);
-            if (token.Owner != UInt160.Zero) throw new Exception("Specified token already owned");
+                StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
+                var serToken = tokenMap[tokenId];
+                if (serToken == null) throw new Exception("Invalid token id"); 
+                var token = (NeoContributorToken.TokenState)StdLib.Deserialize(serToken);
+                if (token.Owner != UInt160.Zero) throw new Exception("Specified token already owned");
 
-            if (!Transfer(from, tokenId, null)) throw new Exception("Transfer Failed");
+                if (!Transfer(from, tokenId, null)) throw new Exception("Transfer Failed");
+            }
         }
-
 
         static void UpdateTotalSupply(BigInteger increment)
         {

@@ -1,0 +1,9 @@
+[
+  {
+    "contract": "NeoContributorToken",
+    "operation": "withdraw",
+    "args": [
+      "@owen"
+    ]
+  }
+]

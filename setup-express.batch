@@ -14,5 +14,8 @@ checkpoint create ./checkpoints/erik-token-minted -f
 contract invoke ./invoke-files/mint-john.neo-invoke.json owen
 checkpoint create ./checkpoints/john-token-minted -f
 
-# contract invoke ./invoke-files/buy-hongfei-nft.json alice
-# checkpoint create ./checkpoints/hongfei-token-bought -f
+contract invoke ./invoke-files/buy-hongfei-nft.json alice
+checkpoint create ./checkpoints/hongfei-token-bought -f
+
+contract invoke ./invoke-files/withdraw.neo-invoke.json owen
+checkpoint create ./checkpoints/neo-withdrawn -f

@@ -13,7 +13,7 @@ namespace client
     {
         public static Task<int> Main(string[] args)
         {
-            var chain = new FileSystem().LoadChain(@"..\default.neo-express");
+            var chain = new FileSystem().FindChain();
 
             var services = new ServiceCollection()
                 .AddSingleton(chain)
