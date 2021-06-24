@@ -41,7 +41,7 @@
             "name": "deploy",
             "type": "neo-contract",
             "request": "launch",
-            "program": "${workspaceFolder}/contract/bin/sc/NeoContributorToken.nef",
+            "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
             "neo-express": "${workspaceFolder}/default.neo-express",
             "invocation": "deploy",
             "deploy-signer": "@owen"
@@ -50,9 +50,9 @@
             "name": "mint (succeed)",
             "type": "neo-contract",
             "request": "launch",
-            "program": "${workspaceFolder}/contract/bin/sc/NeoContributorToken.nef",
+            "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
             "neo-express": "${workspaceFolder}/default.neo-express",
-            "checkpoint": "${workspaceFolder}/checkpoints/contract-deployed.neoxp-checkpoint",
+            "checkpoint": "${workspaceFolder}/checkpoints/token-contract-deployed.neoxp-checkpoint",
             "invocation": {
                 "operation": "mint",
                 "args": [
@@ -69,9 +69,9 @@
             "name": "mint (fail)",
             "type": "neo-contract",
             "request": "launch",
-            "program": "${workspaceFolder}/contract/bin/sc/NeoContributorToken.nef",
+            "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
             "neo-express": "${workspaceFolder}/default.neo-express",
-            "checkpoint": "${workspaceFolder}/checkpoints/contract-deployed.neoxp-checkpoint",
+            "checkpoint": "${workspaceFolder}/checkpoints/token-contract-deployed.neoxp-checkpoint",
             "invocation": {
                 "operation": "mint",
                 "args": [
@@ -88,7 +88,7 @@
             "name": "mint second (succeed)",
             "type": "neo-contract",
             "request": "launch",
-            "program": "${workspaceFolder}/contract/bin/sc/NeoContributorToken.nef",
+            "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
             "neo-express": "${workspaceFolder}/default.neo-express",
             "checkpoint": "${workspaceFolder}/checkpoints/hongfei-token-minted.neoxp-checkpoint",
             "invocation": {
@@ -107,7 +107,7 @@
             "name": "buy-hongfei-nft",
             "type": "neo-contract",
             "request": "launch",
-            "program": "${workspaceFolder}/contract/bin/sc/NeoContributorToken.nef",
+            "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
             "neo-express": "${workspaceFolder}/default.neo-express",
             "checkpoint": "${workspaceFolder}/checkpoints/hongfei-token-minted.neoxp-checkpoint",
             "invocation": {
@@ -121,7 +121,7 @@
             "name": "withdraw-neo",
             "type": "neo-contract",
             "request": "launch",
-            "program": "${workspaceFolder}/contract/bin/sc/NeoContributorToken.nef",
+            "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
             "neo-express": "${workspaceFolder}/default.neo-express",
             "checkpoint": "${workspaceFolder}/checkpoints/hongfei-token-bought.neoxp-checkpoint",
             "invocation": {

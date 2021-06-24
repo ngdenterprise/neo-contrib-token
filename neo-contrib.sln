@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeoContributorToken", "contract\NeoContributorToken.csproj", "{6DD2FE87-9789-4620-A354-2D301D170EF8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeoContributorToken", "token-contract\NeoContributorToken.csproj", "{6DD2FE87-9789-4620-A354-2D301D170EF8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testNeoContributorToken", "test\testNeoContributorToken.csproj", "{28AE9B14-04DA-4D63-B781-2B10A7AC6911}"
 EndProject

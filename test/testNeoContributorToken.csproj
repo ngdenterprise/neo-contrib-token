@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <NeoContractManifestPath>..\contract\bin\sc\NeoContributorToken.manifest.json</NeoContractManifestPath>
+    <NeoContractManifestPath>..\token-contract\bin\sc\NeoContributorToken.manifest.json</NeoContractManifestPath>
     <NeoContractName>NeoContribToken</NeoContractName>
     <NeoTestPackagesVersion>1.0.39-preview</NeoTestPackagesVersion>
     <TargetFramework>net5.0</TargetFramework>
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\contract\NeoContributorToken.csproj">
+    <ProjectReference Include="..\token-contract\NeoContributorToken.csproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
