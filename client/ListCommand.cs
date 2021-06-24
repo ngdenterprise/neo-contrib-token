@@ -10,6 +10,9 @@ namespace client
     [Command("list")]
     class ListCommand
     {
+        [Option]
+        internal bool Available { get; init; } = false;
+
         internal async Task<int> OnExecuteAsync(ExpressChain chain, IConsole console, CancellationToken token)
         {
             try
@@ -22,7 +25,9 @@ namespace client
                 var contractHash = contracts["NeoContributorToken"];
 
                 // print the list of minted tokens
-                var tokensOf = await rpcClient.TokensAsync(contractHash);
+                var tokensOf = Available
+                    ? await rpcClient.TokensOfAsync(contractHash, UInt160.Zero)
+                    : await rpcClient.TokensAsync(contractHash);
                 for (int i = 0; i < tokensOf.Length; i++)
                 {
                     // retrieve properties of NFT
