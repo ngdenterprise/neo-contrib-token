@@ -54,7 +54,7 @@ namespace test
             using var snapshot = fixture.GetSnapshot();
 
             var scriptHash = snapshot.GetContractScriptHash<NeoContributorToken>();
-            var tokenId = snapshot.CalculateTokenId();
+            var tokenId = snapshot.CalculateTokenId(0);
 
             using var engine = new TestApplicationEngine(snapshot, settings, alice);
 
@@ -74,7 +74,7 @@ namespace test
             var owen = chain.GetDefaultAccount("owen").ToScriptHash(settings.AddressVersion);
 
             using var snapshot = fixture.GetSnapshot();
-            var tokenId = snapshot.CalculateTokenId();
+            var tokenId = snapshot.CalculateTokenId(0);
 
             using var engine = new TestApplicationEngine(snapshot, settings);
             engine.ExecuteScript<NeoContributorToken>(c => c.ownerOf(tokenId));
@@ -89,7 +89,7 @@ namespace test
             var settings = chain.GetProtocolSettings();
 
             using var snapshot = fixture.GetSnapshot();
-            var expectedTokenId = snapshot.CalculateTokenId();
+            var expectedTokenId = snapshot.CalculateTokenId(0);
 
             using var engine = new TestApplicationEngine(snapshot, settings);
             engine.ExecuteScript<NeoContributorToken>(c => c.tokens());

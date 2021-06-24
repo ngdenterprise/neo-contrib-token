@@ -61,7 +61,7 @@ namespace test
             engine.State.Should().Be(VMState.HALT);
             engine.ResultStack.Should().HaveCount(1);
 
-            var expectedTokenId = snapshot.CalculateTokenId();
+            var expectedTokenId = snapshot.CalculateTokenId(0);
             engine.ResultStack.Peek(0).Should().BeEquivalentTo(expectedTokenId.AsSpan());
         }
     }

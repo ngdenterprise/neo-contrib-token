@@ -128,12 +128,11 @@ namespace NgdEnterprise.Samples
             // generate new token ID
             StorageContext context = Storage.CurrentContext;
             byte[] key = new byte[] { Prefix_TokenId };
-            ByteString id = Storage.Get(context, key);
-            Storage.Put(context, key, (BigInteger)id + 1);
+            var id = (BigInteger)Storage.Get(context, key);
+            Storage.Put(context, key, id + 1);
 
-            ByteString data = nameof(NeoContributorToken);
-            if (id is not null) data += id;
-            var tokenId = (UInt256)CryptoLib.Sha256(data);
+            var tokenIdString = nameof(NeoContributorToken) + id;
+            var tokenId = (UInt256)CryptoLib.Sha256(tokenIdString);
 
             var tokenState = new NeoContributorToken.TokenState
             {
@@ -172,9 +171,9 @@ namespace NgdEnterprise.Samples
                 if (amount < 10) throw new Exception("Insufficient payment price");
 
                 StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
-                var serToken = tokenMap[tokenId];
-                if (serToken == null) throw new Exception("Invalid token id"); 
-                var token = (NeoContributorToken.TokenState)StdLib.Deserialize(serToken);
+                var tokenData = tokenMap[tokenId];
+                if (tokenData == null) throw new Exception("Invalid token id"); 
+                var token = (NeoContributorToken.TokenState)StdLib.Deserialize(tokenData);
                 if (token.Owner != UInt160.Zero) throw new Exception("Specified token already owned");
 
                 if (!Transfer(from, tokenId, null)) throw new Exception("Transfer Failed");

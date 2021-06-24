@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "client list",
             "type": "coreclr",
@@ -52,7 +53,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
             "neo-express": "${workspaceFolder}/default.neo-express",
-            "checkpoint": "${workspaceFolder}/checkpoints/token-contract-deployed.neoxp-checkpoint",
+            "checkpoint": "${workspaceFolder}/checkpoints/tokens-minted.neoxp-checkpoint",
             "invocation": {
                 "operation": "mint",
                 "args": [
@@ -71,7 +72,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
             "neo-express": "${workspaceFolder}/default.neo-express",
-            "checkpoint": "${workspaceFolder}/checkpoints/token-contract-deployed.neoxp-checkpoint",
+            "checkpoint": "${workspaceFolder}/checkpoints/contracts-deployed.neoxp-checkpoint",
             "invocation": {
                 "operation": "mint",
                 "args": [
@@ -85,45 +86,26 @@
             ]
         },
         {
-            "name": "mint second (succeed)",
+            "name": "buy-nft",
             "type": "neo-contract",
             "request": "launch",
             "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
             "neo-express": "${workspaceFolder}/default.neo-express",
-            "checkpoint": "${workspaceFolder}/checkpoints/hongfei-token-minted.neoxp-checkpoint",
+            "checkpoint": "${workspaceFolder}/checkpoints/tokens-minted.neoxp-checkpoint",
             "invocation": {
-                "operation": "mint",
-                "args": [
-                    "Erik Zhang",
-                    "Founder and Core developer of Neo, Chair of Neo Foundation",
-                    "https://neo3.azureedge.net/images/discover/ErikZhang.jpg"
-                ]
-            },
-            "signers": [
-                "@owen"
-            ]
-        },
-        {
-            "name": "buy-hongfei-nft",
-            "type": "neo-contract",
-            "request": "launch",
-            "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
-            "neo-express": "${workspaceFolder}/default.neo-express",
-            "checkpoint": "${workspaceFolder}/checkpoints/hongfei-token-minted.neoxp-checkpoint",
-            "invocation": {
-                "invoke-file": "${workspaceFolder}/invoke-files/buy-hongfei-nft.json"
+                "invoke-file": "${workspaceFolder}/invoke-files/buy-nft.neo-invoke.json"
             },
             "signers": [
                 "@alice"
             ]
         },
         {
-            "name": "withdraw-neo",
+            "name": "nft-withdraw",
             "type": "neo-contract",
             "request": "launch",
             "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
             "neo-express": "${workspaceFolder}/default.neo-express",
-            "checkpoint": "${workspaceFolder}/checkpoints/hongfei-token-bought.neoxp-checkpoint",
+            "checkpoint": "${workspaceFolder}/checkpoints/token-bought.neoxp-checkpoint",
             "invocation": {
                 "operation": "withdraw",
                 "args": [
@@ -133,5 +115,6 @@
             "signers": [
                 "@owen"
             ]
-        },    ]
+        },
+    ]
 }
