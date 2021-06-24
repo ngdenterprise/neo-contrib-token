@@ -103,7 +103,7 @@ namespace NgdEnterprise.Samples
             }
 
             var listing = (ListingState)StdLib.Deserialize(listingData);
-            if (listing.Price + 1 < amount)
+            if (amount < listing.Price + 1)
             {
                 Runtime.Log("Insufficient payment");
                 return false;
@@ -118,7 +118,7 @@ namespace NgdEnterprise.Samples
             listingMap.Delete(listingId);
             OnListingRemoved(listingId, buyer);
 
-            return false;
+            return true;
         }
 
         public static Map<ByteString, ListingState> GetListings()
