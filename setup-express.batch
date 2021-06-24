@@ -18,5 +18,5 @@ checkpoint create ./checkpoints/tokens-minted -f
 contract invoke ./invoke-files/buy-nft.neo-invoke.json alice
 checkpoint create ./checkpoints/token-bought -f
 
-#contract invoke ./invoke-files/list-nft.json alice
-#checkpoint create ./checkpoints/token-listed -f
+contract invoke ./invoke-files/list-nft.neo-invoke.json alice
+checkpoint create ./checkpoints/token-listed -f

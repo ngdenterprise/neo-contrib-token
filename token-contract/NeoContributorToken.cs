@@ -9,9 +9,8 @@ using Neo.SmartContract.Framework.Services;
 namespace NgdEnterprise.Samples
 {
     [DisplayName("NgdEnterprise.Samples.NeoContributorToken")]
-    [ManifestExtra("Author", "Harry Pierson")]
-    [ManifestExtra("Email", "harrypierson@hotmail.com")]
-    [ManifestExtra("Description", "This is an example contract")]
+    [SupportedStandards("NEP-11")]
+    [ContractPermission("*", "onNEP11Payment")]
     public class NeoContributorToken : SmartContract
     {
         public class TokenState

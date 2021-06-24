@@ -10,9 +10,7 @@ using Neo.SmartContract.Framework.Services;
 namespace NgdEnterprise.Samples
 {
     [DisplayName("NgdEnterprise.Samples.DemoShopContract")]
-    [ManifestExtra("Author", "Harry Pierson")]
-    [ManifestExtra("Email", "harrypierson@hotmail.com")]
-    [ManifestExtra("Description", "This is an example contract")]
+    [ContractPermission("*", "transfer")]
     public class DemoShopContract : SmartContract
     {
         public class ListingState
@@ -121,6 +119,23 @@ namespace NgdEnterprise.Samples
             OnListingRemoved(listingId, buyer);
 
             return false;
+        }
+
+        public static Map<ByteString, ListingState> GetListings()
+        {
+            Map<ByteString, ListingState> map = new();
+
+            StorageMap listingMap = new(Storage.CurrentContext, Prefix_Listing);
+            var iterator = listingMap.Find(FindOptions.DeserializeValues | FindOptions.RemovePrefix);
+
+            while (iterator.Next())
+            {
+                var kvp = (object[])iterator.Value;
+                var key = (ByteString)kvp[0];
+                map[key] = (ListingState)kvp[1];
+            }
+
+            return map;
         }
 
         public bool Withdraw(UInt160 to)

@@ -116,5 +116,79 @@
                 "@owen"
             ]
         },
+        {
+            "name": "list-nft (1)",
+            "type": "neo-contract",
+            "request": "launch",
+            "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
+            "neo-express": "${workspaceFolder}/default.neo-express",
+            "checkpoint": "${workspaceFolder}/checkpoints/token-bought.neoxp-checkpoint",
+            "invocation": {
+                "invoke-file": "${workspaceFolder}/invoke-files/list-nft.neo-invoke.json"
+            },
+            "signers": [
+                "@alice"
+            ]
+        },
+        {
+            "name": "list-nft (2)",
+            "type": "neo-contract",
+            "request": "launch",
+            "program": "${workspaceFolder}/store-contract/bin/sc/DemoShopContract.nef",
+            "neo-express": "${workspaceFolder}/default.neo-express",
+            "checkpoint": "${workspaceFolder}/checkpoints/token-bought.neoxp-checkpoint",
+            "invocation": {
+                "invoke-file": "${workspaceFolder}/invoke-files/list-nft.neo-invoke.json"
+            },
+            "signers": [
+                "@alice"
+            ]
+        },
+        {
+            "name": "get-listings",
+            "type": "neo-contract",
+            "request": "launch",
+            "program": "${workspaceFolder}/store-contract/bin/sc/DemoShopContract.nef",
+            "neo-express": "${workspaceFolder}/default.neo-express",
+            "checkpoint": "${workspaceFolder}/checkpoints/token-listed.neoxp-checkpoint",
+            "invocation": {
+                "operation": "getListings",
+                "args": []
+            },
+        },
+        {
+            "name": "buy-listed-nft (1)",
+            "type": "neo-contract",
+            "request": "launch",
+            "program": "${workspaceFolder}/store-contract/bin/sc/DemoShopContract.nef",
+            "neo-express": "${workspaceFolder}/default.neo-express",
+            "checkpoint": "${workspaceFolder}/checkpoints/token-listed.neoxp-checkpoint",
+            "invocation": {
+                "invoke-file": "${workspaceFolder}/invoke-files/buy-listed-nft.neo-invoke.json"
+            },
+        },
+        {
+            "name": "buy-listed-nft (2)",
+            "type": "neo-contract",
+            "request": "launch",
+            "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
+            "neo-express": "${workspaceFolder}/default.neo-express",
+            "checkpoint": "${workspaceFolder}/checkpoints/token-listed.neoxp-checkpoint",
+            "invocation": {
+                "invoke-file": "${workspaceFolder}/invoke-files/buy-listed-nft.neo-invoke.json"
+            },
+        },
+        {
+            "name": "cancel-listing",
+            "type": "neo-contract",
+            "request": "launch",
+            "program": "${workspaceFolder}/store-contract/bin/sc/DemoShopContract.nef",
+            "neo-express": "${workspaceFolder}/default.neo-express",
+            "checkpoint": "${workspaceFolder}/checkpoints/token-listed.neoxp-checkpoint",
+            "invocation": {
+                "operation": "cancelListing",
+                "args": ["0x004A45069667C029C1C7DB72F12A450978B7816FC63529279721239CC9312842"],
+            },
+        },
     ]
 }
