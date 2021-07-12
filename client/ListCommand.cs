@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Linq;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using Neo;
@@ -19,11 +20,12 @@ namespace client
             {
                 // load neo express file so we can determin RPC port + protocol settings
                 var rpcClient = chain.GetRpcClient();
-
                 // List the deployed contracts (neo-express custom functionality) and find the NeoContributorToken script hash
-                var contracts = await rpcClient.ListContractsAsync();
-                var contractHash = contracts["NeoContributorToken"];
-
+               // var contracts = await rpcClient.ListContractsAsync();
+                //console.WriteLine(contracts.Last().Value);
+               // var contractHash =  contracts.Where(S=> S.Key == "NeoContributorToken").LastOrDefault().Value;
+                //var contractHash = contracts["NeoContributorToken"];
+                var contractHash = UInt160.Parse("0x0d2224a67df903b014bdc1a07a3260a61aeb0a16");
                 // print the list of minted tokens
                 var tokensOf = Available
                     ? await rpcClient.TokensOfAsync(contractHash, UInt160.Zero)
@@ -38,10 +40,12 @@ namespace client
                     var name = props["name"].GetString();
                     var description = props["description"].GetString();
                     var image = props["image"].GetString();
+                     var points = props["points"].GetString();
 
                     // Write token info to console
                     console.WriteLine($"{i + 1}. {name} ({description})");
                     console.WriteLine($"\t{image}");
+                    console.WriteLine($"\t{points}");
                     if (owner == UInt160.Zero)
                         console.WriteLine($"\tAvailable");
                     else

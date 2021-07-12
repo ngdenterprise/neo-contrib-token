@@ -57,7 +57,7 @@ namespace test
             using var snapshot = fixture.GetSnapshot();
             using var engine = new TestApplicationEngine(snapshot, settings, owen);
 
-            engine.ExecuteScript<NeoContributorToken>(c => c.mint("Test Contributor", "Test Description", "https://i.picsum.photos/id/856/500/500.jpg?hmac=BOzGgyuyo7weE0xNPxJ_8cw3I7oWUwIiHRN_Y51EoNs"));
+            engine.ExecuteScript<NeoContributorToken>(c => c.mint("Test Contributor", "Test Description", "https://i.picsum.photos/id/856/500/500.jpg?hmac=BOzGgyuyo7weE0xNPxJ_8cw3I7oWUwIiHRN_Y51EoNs", "1"));
             engine.State.Should().Be(VMState.HALT);
             engine.ResultStack.Should().HaveCount(1);
 

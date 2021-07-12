@@ -1,11 +1,13 @@
 [
   {
-    "contract": "NeoContributorToken",
+    "contract": "0x0d2224a67df903b014bdc1a07a3260a61aeb0a16",
     "operation": "mint",
     "args": [
-        "Erik Zhang",
+        "Test2",
         "Founder and Core developer of Neo, Chair of Neo Foundation",
-        "https://neo3.azureedge.net/images/discover/ErikZhang.jpg"
+        "https://neo3.azureedge.net/images/discover/ErikZhang.jpg",
+        "20"
+
     ]
   }
 ]

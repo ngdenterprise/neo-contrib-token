@@ -1,11 +1,15 @@
 [
   {
-    "contract": "NeoContributorToken",
-    "operation": "mint",
+    "contract": "0x528bbb689a48d04ffa2bf57be41b746dd75a6a24",
+    "operation": "TestAgain",
     "args": [
         "John deVadoss",
         "Founder of NGD Enterprise, Director of Enterprise Adoption",
-        "https://neo3.azureedge.net/images/discover/JohnDevadoss.jpg"
+        "https://neo3.azureedge.net/images/discover/JohnDevadoss.jpg",
+        "20",
+"@steve"
+
+
     ]
   }
 ]

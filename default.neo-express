@@ -105,6 +105,23 @@
           }
         }
       ]
+    },
+    {
+      "name": "amazon",
+      "accounts": [
+        {
+          "private-key": "e345c148e77fafa8326e087acac6ae97ca57a262d7653964b6cfa9870a2b0a9f",
+          "script-hash": "NVzBnYMiZgLqdTWgnt93LGGWTiNGfos98x",
+          "label": null,
+          "is-default": true,
+          "contract": {
+            "script": "0c2103bd60203075d04f31505c69d0afd25b9acf6e6093fc03094645abc397f03d50664156e7b327",
+            "parameters": [
+              "Signature"
+            ]
+          }
+        }
+      ]
     }
   ],
   "settings": {}

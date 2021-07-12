@@ -1,0 +1,74 @@
+<html>
+<script src="https://unpkg.com/@cityofzion/neon-js"></script>
+
+<script>
+
+    const nodeURL = "http://localhost:50012/"
+    const contractHash = "0x21e025f515b5b7f9b106cc8117ee078149c2de26"
+    const provider = new Neon.api.neoscan.instance("PrivateNet");
+    const intent = {
+            scriptHash: contractHash,
+            "operation" : "mint",
+            "args": [ "Gyan Zhang","Founder and Core developer of Gyan, Chair of Neo Foundation","https://neo3.azureedge.net/images/discover/ErikZhang.jpg", 10]
+        }
+   
+    
+    async function helloNeoBlockchain() {
+
+        //const testAccountA = new Neon.wallet.Account("NUte7HnDiDEzWVZMNVsHw93yeyx4rjcQfp")
+
+        // You will be able to lookup an instance of PrivateNet neoscan
+        var privateNetNeoscan = new Neon.api.neoscan.instance("PrivateNet");
+        privateNetNeoscan.getBalance("NUte7HnDiDEzWVZMNVsHw93yeyx4rjcQfp").then(res =>{debugger; console.log(res);} ).catch(function(error){
+            debugger;
+        });
+    
+
+        // const config = {
+        //     name: "PrivateNet",
+        //     extra: {
+        //         neoscan: "http://localhost:50012/api/main_net"
+        //     }
+        // };
+
+        // provider.getRPCEndpoint().then(nodeUrl => {
+        //     invokeFunction(response => {
+        //         outputHtml('Results: ');
+        //         iterate(response, '');
+        //     }, nodeUrl);
+        // });
+
+        // function invokeFunction(callback, url) {
+        //     Neon.rpc.Query.invokeFunction(contractHash, "mint", [ "Gyan Zhang","Founder and Core developer of Gyan, Chair of Neo Foundation","https://neo3.azureedge.net/images/discover/ErikZhang.jpg", 10])
+        //         .execute(url)
+        //         .then(res => {
+        //             callback(res); // You should get a result with state: "HALT, BREAK"
+        //         })
+        // }
+
+        // const facade = await Neon.api.NetworkFacade.fromConfig({
+        //     node: nodeURL,
+        // })
+
+        // const res = await facade.invoke(intent)
+        // console.log(res)
+
+        // const value = Neon.u.HexString.fromBase64(res.stack[0].value).toAscii()
+        // console.log(value)
+        // const height = await facade.getRpcNode().getBlockCount()
+
+        // document.getElementById("storage").innerHTML = value
+        // document.getElementById("block").innerHTML = height
+    }
+    </script>
+
+    <button onclick="helloNeoBlockchain();">
+        Hello
+    </button>
+
+    <div id="storage"> TokenId</div>
+    <div id="block"> Block</div>
+
+
+
+</html>

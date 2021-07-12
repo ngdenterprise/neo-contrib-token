@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Tokenaccumulator</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://unpkg.com/@cityofzion/neon-js@next"></script>
+
+  <script>
+
+    const nodeURL = "http://localhost:50012/"
+    const contractHash = "0xed0feef63f9bc1805f685bb4bae4c9d8489df694"
+
+
+    async function helloNeoBlockchain() {
+
+
+      const vars = {};
+
+     
+      let paramArray = [Neon.sc.ContractParam.string("Amazon Pay"), Neon.sc.ContractParam.string("Use amazon pay points on Amazon.in"), Neon.sc.ContractParam.string("https://cdn.vox-cdn.com/thumbor/Ortz2EKcoe-oIJ8PAS4LBo5fTLs=/1400x1050/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/22259693/download.png"), Neon.sc.ContractParam.string("10") ]
+
+      const account = new Neon.wallet.Account("e345c148e77fafa8326e087acac6ae97ca57a262d7653964b6cfa9870a2b0a9f");
+
+
+      const scriptHashAccountAddress = Neon.wallet.getScriptHashFromAddress(account.address);
+        let networkMagic = 2106651775;
+
+        let rpcAddress= nodeURL;
+
+        let config = {
+          account
+        }
+
+        const contract = new Neon.experimental.SmartContract(
+        Neon.u.HexString.fromHex(contractHash),
+        {
+          networkMagic,
+          rpcAddress,
+          account,
+        },
+        config
+      );
+
+
+
+      let res = await contract.testInvoke("mint", paramArray);
+      res = await contract.invoke("mint", paramArray);
+
+     
+      console.log(res)
+
+      const value = Neon.u.HexString.fromBase64(res.stack[0].value).toAscii()
+      console.log(value)
+
+
+    }
+  </script>
+</head>
+
+<body>
+  <button onclick="helloNeoBlockchain();">
+    Hello
+  </button>
+
+  <div id="storage"> TokenId</div>
+  <div id="block"> Block</div>
+  <app-root></app-root>
+</body>
+
+</html>

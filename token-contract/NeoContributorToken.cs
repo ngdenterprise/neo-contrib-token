@@ -19,6 +19,8 @@ namespace NgdEnterprise.Samples
             public string Name;
             public string Description;
             public string Image;
+
+            public string Points;
         }
 
         public delegate void OnTransferDelegate(UInt160 from, UInt160 to, BigInteger amount, ByteString tokenId);
@@ -33,8 +35,10 @@ namespace NgdEnterprise.Samples
         const byte Prefix_AccountToken = 0x04;
         const byte Prefix_ContractOwner = 0xFF;
 
+        const byte Prefix_WhiteListAddress = 0x08;
+
         [Safe]
-        public static string Symbol() => "NEOCNTRB";
+        public static string Symbol() => "AMZ";
 
         [Safe]
         public static byte Decimals() => 0;
@@ -69,8 +73,10 @@ namespace NgdEnterprise.Samples
             map["name"] = token.Name;
             map["description"] = token.Description;
             map["image"] = token.Image;
+            map["points"] = token.Points;
             return map;
         }
+        
 
         [Safe]
         public static Iterator Tokens()
@@ -88,6 +94,16 @@ namespace NgdEnterprise.Samples
             return accountMap.Find(owner, FindOptions.KeysOnly | FindOptions.RemovePrefix);
         }
 
+      
+
+
+        public static bool Burn(ByteString tokenId)
+        {
+             StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
+             tokenMap.Delete(tokenId);
+             UpdateTotalSupply(-1);
+             return true;
+        }
         public static bool Transfer(UInt160 to, ByteString tokenId, object data)
         {
             if (to is null || !to.IsValid) throw new Exception("The argument \"to\" is invalid.");
@@ -116,10 +132,23 @@ namespace NgdEnterprise.Samples
                 UpdateBalance(to, tokenId, +1);
             }
             PostTransfer(from, to, tokenId, data);
+
+            bool isWhiteListedAddress = IsWhitelistedAddress(to);
+            if(isWhiteListedAddress)
+            {
+                UpdateBalance(to, tokenId, -1);
+                Burn(tokenId);
+            }
+
+            
+
+                
             return true;
         }
 
-        public static UInt256 Mint(string name, string description, string image)
+
+        
+        public static UInt256 Mint(string name, string description, string image, string points)
         {
             if (!ValidateContractOwner()) throw new Exception("Only the contract owner can mint tokens");
 
@@ -132,13 +161,19 @@ namespace NgdEnterprise.Samples
             var tokenIdString = nameof(NeoContributorToken) + id;
             var tokenId = (UInt256)CryptoLib.Sha256(tokenIdString);
 
+            var tx = (Transaction)Runtime.ScriptContainer;
+            var accountOwner = tx.Sender;
+
             var tokenState = new NeoContributorToken.TokenState
             {
-                Owner = UInt160.Zero,
+                Owner = accountOwner,
                 Name = name,
                 Description = description,
                 Image = image,
+                Points = points
             };
+
+            
 
             StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
             tokenMap[tokenId] = StdLib.Serialize(tokenState);
@@ -146,7 +181,33 @@ namespace NgdEnterprise.Samples
             UpdateTotalSupply(+1);
             PostTransfer(null, tokenState.Owner, tokenId, null);
 
+            AddWhitelistedStoreAddress(tx.Sender);
+
             return tokenId;
+        }
+
+        public static bool AddWhitelistedStoreAddress(UInt160 storeAddress)
+        {
+            StorageMap addressMap = new(Storage.CurrentContext, Prefix_WhiteListAddress);
+            var whiteListedAddr = addressMap[storeAddress];
+            if(whiteListedAddr == null)
+            {
+                addressMap[storeAddress] = storeAddress;
+            }
+           
+            return true;
+        }
+
+        public static string GetAddress(ByteString addressString)
+        {
+            return StdLib.Base58CheckEncode(addressString);
+        }
+
+        private static bool IsWhitelistedAddress(UInt160 storeAddress)
+        {
+            StorageMap addressMap = new(Storage.CurrentContext, Prefix_WhiteListAddress);
+            var whiteListedAddr = addressMap[storeAddress];
+            return whiteListedAddr == null? false: true;
         }
 
         public bool Withdraw(UInt160 to)
