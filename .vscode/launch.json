@@ -93,7 +93,14 @@
             "neo-express": "${workspaceFolder}/default.neo-express",
             "checkpoint": "${workspaceFolder}/checkpoints/tokens-minted.neoxp-checkpoint",
             "invocation": {
-                "invoke-file": "${workspaceFolder}/invoke-files/buy-nft.neo-invoke.json"
+                "contract": "NeoToken",
+                "operation": "transfer",
+                "args": [
+                  "@alice",
+                  "#NeoContributorToken",
+                  10,
+                  "0x99E791FD36B4924F19C15617B6CEB589006AA8381E5CF946B1973279EA4B5EFB"
+                ]
             },
             "signers": [
                 "@alice"

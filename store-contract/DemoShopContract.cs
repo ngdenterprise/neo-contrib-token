@@ -4,8 +4,11 @@ using System.Numerics;
 using Neo;
 using Neo.SmartContract;
 using Neo.SmartContract.Framework;
+using Neo.SmartContract.Framework.Attributes;
 using Neo.SmartContract.Framework.Native;
 using Neo.SmartContract.Framework.Services;
+
+#nullable enable
 
 namespace NgdEnterprise.Samples
 {
@@ -15,21 +18,21 @@ namespace NgdEnterprise.Samples
     {
         public class ListingState
         {
-            public UInt160 TokenScriptHash;
-            public ByteString TokenId;
-            public UInt160 OriginalOwner;
+            public UInt160 TokenScriptHash = UInt160.Zero;
+            public ByteString TokenId = default!;
+            public UInt160 OriginalOwner = UInt160.Zero;
             public BigInteger Price;
         }
 
         public delegate void OnListingCreatedDelegate(ByteString listingId, UInt160 tokenScriptHash, ByteString tokenId, BigInteger price);
 
         [DisplayName("ListingCreated")]
-        public static event OnListingCreatedDelegate OnListingCreated;
+        public static event OnListingCreatedDelegate OnListingCreated = default!;
 
         public delegate void OnListingRemovedDelegate(ByteString listingId, UInt160 newOwner);
 
         [DisplayName("ListingRemoved")]
-        public static event OnListingRemovedDelegate OnListingRemoved;
+        public static event OnListingRemovedDelegate OnListingRemoved = default!;
 
         const byte Prefix_Listing = 0x00;
         const byte Prefix_ContractOwner = 0xFF;
@@ -166,7 +169,7 @@ namespace NgdEnterprise.Samples
             ContractManagement.Update(nefFile, manifest, null);
         }
 
-        static bool Nep11Transfer(UInt160 scriptHash, UInt160 to, ByteString tokenId, object data = null)
+        static bool Nep11Transfer(UInt160 scriptHash, UInt160 to, ByteString tokenId, object? data = null)
         {
             return (bool)Contract.Call(scriptHash, "transfer", CallFlags.All, to, tokenId, data);
         }

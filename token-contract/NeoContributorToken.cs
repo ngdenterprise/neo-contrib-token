@@ -3,8 +3,11 @@ using System.ComponentModel;
 using System.Numerics;
 using Neo;
 using Neo.SmartContract.Framework;
+using Neo.SmartContract.Framework.Attributes;
 using Neo.SmartContract.Framework.Native;
 using Neo.SmartContract.Framework.Services;
+
+#nullable enable
 
 namespace NgdEnterprise.Samples
 {
@@ -15,16 +18,16 @@ namespace NgdEnterprise.Samples
     {
         public class TokenState
         {
-            public UInt160 Owner;
-            public string Name;
-            public string Description;
-            public string Image;
+            public UInt160 Owner = UInt160.Zero;
+            public string Name = string.Empty;
+            public string Description = string.Empty;
+            public string Image = string.Empty;
         }
 
-        public delegate void OnTransferDelegate(UInt160 from, UInt160 to, BigInteger amount, ByteString tokenId);
+        public delegate void OnTransferDelegate(UInt160? from, UInt160 to, BigInteger amount, ByteString tokenId);
 
         [DisplayName("Transfer")]
-        public static event OnTransferDelegate OnTransfer;
+        public static event OnTransferDelegate OnTransfer = default!;
 
         const byte Prefix_TotalSupply = 0x00;
         const byte Prefix_Balance = 0x01;
@@ -88,7 +91,7 @@ namespace NgdEnterprise.Samples
             return accountMap.Find(owner, FindOptions.KeysOnly | FindOptions.RemovePrefix);
         }
 
-        public static bool Transfer(UInt160 to, ByteString tokenId, object data)
+        public static bool Transfer(UInt160 to, ByteString tokenId, object? data)
         {
             if (to is null || !to.IsValid) throw new Exception("The argument \"to\" is invalid.");
 
@@ -225,7 +228,7 @@ namespace NgdEnterprise.Samples
                 accountMap.Delete(key);
         }
 
-        static void PostTransfer(UInt160 from, UInt160 to, ByteString tokenId, object data)
+        static void PostTransfer(UInt160? from, UInt160 to, ByteString tokenId, object? data)
         {
             OnTransfer(from, to, 1, tokenId);
             if (to is not null && ContractManagement.GetContract(to) is not null)

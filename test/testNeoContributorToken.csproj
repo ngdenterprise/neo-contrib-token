@@ -4,8 +4,8 @@
     <IsPackable>false</IsPackable>
     <NeoContractManifestPath>..\token-contract\bin\sc\NeoContributorToken.manifest.json</NeoContractManifestPath>
     <NeoContractName>NeoContribToken</NeoContractName>
-    <NeoTestPackagesVersion>1.0.39-preview</NeoTestPackagesVersion>
-    <TargetFramework>net5.0</TargetFramework>
+    <NeoTestPackagesVersion>3.1.10</NeoTestPackagesVersion>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +17,6 @@
     <PackageReference Include="Neo.Assertions" Version="$(NeoTestPackagesVersion)" />
     <PackageReference Include="Neo.BuildTasks" Version="$(NeoTestPackagesVersion)" PrivateAssets="All" />
     <PackageReference Include="Neo.Test.Harness" Version="$(NeoTestPackagesVersion)" />
-    <PackageReference Include="System.IO.Abstractions" Version="13.2.33" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -26,10 +25,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ContractProjectReference Include="..\store-contract\DemoShopContract.csproj" />
+    <ContractProjectReference Include="..\token-contract\NeoContributorToken.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\token-contract\NeoContributorToken.csproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
+
+  <!-- <Target Name="foo" BeforeTargets="ConfigureNeoContractInterface">
+    <MSBuild Projects="@(ContractProjectReference)" Targets="GetTargetFrameworks" Properties="Configuration=$(Configuration)">
+      <Output TaskParameter="TargetFrameworks" ItemName="ContractProjectReferenceOutputs" />
+    </MSBuild>
+    <Message Text="Foo @(ContractProjectReferenceOutputs)" Importance="high" />
+  </Target> -->
+
 
   <Target Name="ConfigureNeoContractInterface" BeforeTargets="ExecuteNeoContractInterface">
     <PropertyGroup>
