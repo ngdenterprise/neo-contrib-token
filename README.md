@@ -1,4 +1,4 @@
-# neo-contrib-token
+# neo-contrib-token // sample code for demonstration purposes
 #
 # NFT Tutorial
 
