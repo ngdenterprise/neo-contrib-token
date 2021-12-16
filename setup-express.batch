@@ -10,13 +10,13 @@ contract deploy ./token-contract/bin/sc/NeoContributorToken.nef owen
 contract deploy ./store-contract/bin/sc/DemoShopContract.nef steve
 checkpoint create ./checkpoints/contracts-deployed -f
 
-contract invoke ./invoke-files/mint-hongfei.neo-invoke.json owen
-contract invoke ./invoke-files/mint-erik.neo-invoke.json owen
-contract invoke ./invoke-files/mint-john.neo-invoke.json owen
+contract run NeoContributorToken mint "Da Hongfei" "Founder of Neo, Chair of Neo Foundation, CEO of NGD" "https://neo3.azureedge.net/images/discover/DaHongfei.jpg" -a owen
+contract run NeoContributorToken mint "Erik Zhang" "Founder and Core developer of Neo, Chair of Neo Foundation" "https://neo3.azureedge.net/images/discover/ErikZhang.jpg" -a owen
+contract run NeoContributorToken mint "John deVadoss" "Founder of NGD Enterprise, Director of Enterprise Adoption" "https://neo3.azureedge.net/images/discover/JohnDevadoss.jpg" -a owen
 checkpoint create ./checkpoints/tokens-minted -f
 
-contract invoke ./invoke-files/buy-nft.neo-invoke.json alice
-checkpoint create ./checkpoints/token-bought -f
+#contract invoke ./invoke-files/buy-nft.neo-invoke.json alice
+#checkpoint create ./checkpoints/token-bought -f
 
-contract invoke ./invoke-files/list-nft.neo-invoke.json alice
-checkpoint create ./checkpoints/token-listed -f
+#contract invoke ./invoke-files/list-nft.neo-invoke.json alice
+#checkpoint create ./checkpoints/token-listed -f
