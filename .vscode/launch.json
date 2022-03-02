@@ -123,7 +123,7 @@
             ]
         },
         {
-            "name": "list-nft (1)",
+            "name": "list-nft",
             "type": "neo-contract",
             "request": "launch",
             "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
@@ -134,20 +134,9 @@
             },
             "signers": [
                 "@alice"
-            ]
-        },
-        {
-            "name": "list-nft (2)",
-            "type": "neo-contract",
-            "request": "launch",
-            "program": "${workspaceFolder}/store-contract/bin/sc/DemoShopContract.nef",
-            "neo-express": "${workspaceFolder}/default.neo-express",
-            "checkpoint": "${workspaceFolder}/checkpoints/token-bought.neoxp-checkpoint",
-            "invocation": {
-                "invoke-file": "${workspaceFolder}/invoke-files/list-nft.neo-invoke.json"
-            },
-            "signers": [
-                "@alice"
+            ],
+            "stored-contracts": [
+                "${workspaceFolder}/store-contract/bin/sc/DemoShopContract.nef"
             ]
         },
         {
@@ -163,7 +152,7 @@
             },
         },
         {
-            "name": "buy-listed-nft (1)",
+            "name": "buy-listed-nft",
             "type": "neo-contract",
             "request": "launch",
             "program": "${workspaceFolder}/store-contract/bin/sc/DemoShopContract.nef",
@@ -174,20 +163,9 @@
             },
             "signers": [
                 "@bob"
-            ]
-        },
-        {
-            "name": "buy-listed-nft (2)",
-            "type": "neo-contract",
-            "request": "launch",
-            "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
-            "neo-express": "${workspaceFolder}/default.neo-express",
-            "checkpoint": "${workspaceFolder}/checkpoints/token-listed.neoxp-checkpoint",
-            "invocation": {
-                "invoke-file": "${workspaceFolder}/invoke-files/buy-listed-nft.neo-invoke.json"
-            },
-            "signers": [
-                "@bob"
+            ],
+            "stored-contracts": [
+                "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef"
             ]
         },
         {
