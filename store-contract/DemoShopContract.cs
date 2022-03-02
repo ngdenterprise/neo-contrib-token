@@ -55,7 +55,7 @@ namespace NgdEnterprise.Samples
             if (amount <= 0) throw new Exception("Invalid payment amount");
             if (data == null) throw new Exception("Must specify listing id when transfering NEP-17 tokens");
 
-            if (!CompleteSale((ByteString)data, from, amount)) throw new Exception("Sale failed to complete");
+            if (!CompleteSale((UInt256)data, from, amount)) throw new Exception("Sale failed to complete");
         }
 
         public static bool CancelListing(ByteString listingId)
@@ -81,7 +81,7 @@ namespace NgdEnterprise.Samples
 
         static void CreateListing(UInt160 tokenScriptHash, ByteString tokenId, UInt160 originalOwner, BigInteger price)
         {           
-            var listingId = CryptoLib.Sha256(tokenScriptHash + tokenId);
+            UInt256 listingId = (UInt256)CryptoLib.Sha256(tokenScriptHash + tokenId);
             var listingState = new ListingState
             {
                 TokenScriptHash = tokenScriptHash,
@@ -95,7 +95,7 @@ namespace NgdEnterprise.Samples
             OnListingCreated(listingId, tokenScriptHash, tokenId, price);
         }
 
-        static bool CompleteSale(ByteString listingId, UInt160 buyer, BigInteger amount)
+        static bool CompleteSale(UInt256 listingId, UInt160 buyer, BigInteger amount)
         {
             StorageMap listingMap = new(Storage.CurrentContext, Prefix_Listing);
             var listingData = listingMap[listingId];
@@ -124,9 +124,9 @@ namespace NgdEnterprise.Samples
             return true;
         }
 
-        public static Map<ByteString, ListingState> GetListings()
+        public static Map<UInt256, ListingState> GetListings()
         {
-            Map<ByteString, ListingState> map = new();
+            Map<UInt256, ListingState> map = new();
 
             StorageMap listingMap = new(Storage.CurrentContext, Prefix_Listing);
             var iterator = listingMap.Find(FindOptions.DeserializeValues | FindOptions.RemovePrefix);
@@ -134,7 +134,7 @@ namespace NgdEnterprise.Samples
             while (iterator.Next())
             {
                 var kvp = (object[])iterator.Value;
-                var key = (ByteString)kvp[0];
+                var key = (UInt256)kvp[0];
                 map[key] = (ListingState)kvp[1];
             }
 

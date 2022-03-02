@@ -15,8 +15,8 @@ contract run NeoContributorToken mint "Erik Zhang" "Founder and Core developer o
 contract run NeoContributorToken mint "John deVadoss" "Founder of NGD Enterprise, Director of Enterprise Adoption" "https://neo3.azureedge.net/images/discover/JohnDevadoss.jpg" -a owen
 checkpoint create ./checkpoints/tokens-minted -f
 
-#contract invoke ./invoke-files/buy-nft.neo-invoke.json alice
-#checkpoint create ./checkpoints/token-bought -f
+contract invoke ./invoke-files/buy-nft.neo-invoke.json alice
+checkpoint create ./checkpoints/token-bought -f
 
-#contract invoke ./invoke-files/list-nft.neo-invoke.json alice
-#checkpoint create ./checkpoints/token-listed -f
+contract invoke ./invoke-files/list-nft.neo-invoke.json alice
+checkpoint create ./checkpoints/token-listed -f
