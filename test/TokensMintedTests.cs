@@ -10,6 +10,7 @@ using testNeoContributorToken;
 using Neo.Assertions;
 using Neo.BlockchainToolkit.SmartContract;
 using Neo.SmartContract.Native;
+using Neo.IO;
 
 namespace test
 {
@@ -41,7 +42,7 @@ namespace test
             // since this is the second token minted, it's token ID is the contract script hash, incremented by one and sha256 hashed
             var expectedTokenId = snapshot.CalculateTokenId(3);
 
-            engine.ResultStack.Peek(0).Should().BeEquivalentTo(expectedTokenId.AsSpan());
+            engine.ResultStack.Peek(0).Should().BeEquivalentTo(expectedTokenId.ToArray().AsSpan());
         }
 
 
