@@ -18,7 +18,7 @@ namespace NgdEnterprise.Samples
         const byte Prefix_AccountToken = 0x04;
         const byte Prefix_ContractOwner = 0xFF;
 
-        public class BalanceStorageGroup // : IStorageGroup<Address, BigInteger>
+        public class BalanceStorageGroup : IStorageGroup<Address, BigInteger>
         {
             StorageMap map = new StorageMap(Storage.CurrentContext, Prefix_Balance);
             public BigInteger Get(Address key)
@@ -31,7 +31,7 @@ namespace NgdEnterprise.Samples
             public void Delete(Address key) => map.Delete(key);
         }
 
-        public class TokenStorageGroup //: IStorageGroup<UInt256, TokenState>
+        public class TokenStorageGroup : IStorageGroup<UInt256, TokenState>
         {
             StorageMap map = new StorageMap(Storage.CurrentContext, Prefix_Token);
 
@@ -47,7 +47,7 @@ namespace NgdEnterprise.Samples
             public void Delete(UInt256 key) => map.Delete(key);
         }
 
-        public class AccountTokenStorageGroup //: IStorageGroup<Address, UInt256, BigInteger>
+        public class AccountTokenStorageGroup : IStorageGroup<Address, UInt256, BigInteger>
         {
             StorageMap map = new StorageMap(Storage.CurrentContext, Prefix_AccountToken);
 
