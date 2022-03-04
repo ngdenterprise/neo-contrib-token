@@ -13,10 +13,8 @@ using Neo.SmartContract.Framework.Services;
 
 namespace NgdEnterprise.Samples
 {
-    public class TokenState
+    public class TokenState : Nep11TokenState
     {
-        public Address Owner = Address.Invalid;
-        public string Name = string.Empty;
         public string Description = string.Empty;
         public string Image = string.Empty;
     }
@@ -27,7 +25,7 @@ namespace NgdEnterprise.Samples
     public class NeoContributorToken : SmartContract
     {
 
-        public delegate void OnTransferDelegate(Address? from, Address to, BigInteger amount, UInt256 tokenId);
+        public delegate void OnTransferDelegate(UInt160? from, UInt160 to, BigInteger amount, UInt256 tokenId);
 
         [DisplayName("Transfer")]
         public static event OnTransferDelegate OnTransfer = default!;
@@ -42,7 +40,7 @@ namespace NgdEnterprise.Samples
         public static BigInteger TotalSupply() => ContractStorage.TotalSupply;
 
         [Safe]
-        public static BigInteger BalanceOf(Address owner)
+        public static BigInteger BalanceOf(UInt160 owner)
         {
             if (owner is null || !owner.IsValid)
                 throw new Exception("The argument \"owner\" is invalid.");
@@ -78,7 +76,7 @@ namespace NgdEnterprise.Samples
         }
 
         [Safe]
-        public static Iterator TokensOf(Address owner)
+        public static Iterator TokensOf(UInt160 owner)
         {
             if (owner is null || !owner.IsValid)
                 throw new Exception("The argument \"owner\" is invalid");
@@ -86,7 +84,7 @@ namespace NgdEnterprise.Samples
             return ContractStorage.AccountToken.Find(owner);
         }
 
-        public static bool Transfer(Address to, UInt256 tokenId, object? data)
+        public static bool Transfer(UInt160 to, UInt256 tokenId, object? data)
         {
             if (to is null || !to.IsValid) throw new Exception("The argument \"to\" is invalid.");
 
@@ -98,7 +96,7 @@ namespace NgdEnterprise.Samples
                 return false;
             }
 
-            Address from = token.Owner;
+            UInt160 from = token.Owner;
             if (from != UInt160.Zero && !Runtime.CheckWitness(from))
             {
                 Runtime.Log("only the token owner can transfer it");
@@ -129,7 +127,7 @@ namespace NgdEnterprise.Samples
 
             var token = new TokenState
             {
-                Owner = Address.Invalid,
+                Owner = UInt160.Zero,
                 Name = name,
                 Description = description,
                 Image = image,
@@ -143,10 +141,10 @@ namespace NgdEnterprise.Samples
             return tokenId;
         }
 
-        public bool Withdraw(Address to)
+        public bool Withdraw(UInt160 to)
         {
             if (!ValidateContractOwner()) throw new Exception("Only the contract owner can withdraw NEO");
-            if (to == Address.Invalid || !to.IsValid) throw new Exception("Invalid withdrawal address");
+            if (to == UInt160.Zero || !to.IsValid) throw new Exception("Invalid withdrawal address");
 
             var balance = NEO.BalanceOf(Runtime.ExecutingScriptHash);
             if (balance <= 0) return false;
@@ -154,7 +152,7 @@ namespace NgdEnterprise.Samples
             return NEO.Transfer(Runtime.ExecutingScriptHash, to, balance);
         }
 
-        public static void OnNEP17Payment(Address from, BigInteger amount, object data)
+        public static void OnNEP17Payment(UInt160 from, BigInteger amount, object data)
         {
             if (data != null)
             {
@@ -175,7 +173,7 @@ namespace NgdEnterprise.Samples
             if (update) return;
 
             var tx = (Transaction)Runtime.ScriptContainer;
-            ContractStorage.ContractOwner = (Address)tx.Sender;
+            ContractStorage.ContractOwner = (UInt160)tx.Sender;
         }
 
         public static void Update(ByteString nefFile, string manifest)
@@ -191,7 +189,7 @@ namespace NgdEnterprise.Samples
             ContractStorage.TotalSupply = totalSupply + increment;
         }
 
-        static void UpdateBalance(Address owner, UInt256 tokenId, int increment)
+        static void UpdateBalance(UInt160 owner, UInt256 tokenId, int increment)
         {
             var balancesGroup = ContractStorage.Balances;
             var balance = balancesGroup.Get(owner);
@@ -211,7 +209,7 @@ namespace NgdEnterprise.Samples
                 ContractStorage.AccountToken.Delete(owner, tokenId);
         }
 
-        static void PostTransfer(Address? from, Address to, UInt256 tokenId, object? data)
+        static void PostTransfer(UInt160? from, UInt160 to, UInt256 tokenId, object? data)
         {
             OnTransfer(from, to, 1, tokenId);
             if (to is not null && ContractManagement.GetContract(to) is not null)

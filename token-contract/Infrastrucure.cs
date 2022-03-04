@@ -1,11 +1,34 @@
 using System;
+using Neo;
+using Neo.SmartContract.Framework.Attributes;
 
 namespace Neo.SmartContract.Framework
 {
-    public class Address : Neo.UInt160 
-    {
-        public static Address Invalid => (Address)Neo.UInt160.Zero;
-    }
+    // public class Address
+    // {
+    //     public static Address Invalid => (Address)Neo.UInt160.Zero;
+
+    //     public extern bool IsValid
+    //     {
+    //         [OpCode(OpCode.DUP)]
+    //         [OpCode(OpCode.ISTYPE, "0x28")] //ByteString
+    //         [OpCode(OpCode.SWAP)]
+    //         [OpCode(OpCode.SIZE)]
+    //         [OpCode(OpCode.PUSHINT8, "14")] // 0x14 == 20 bytes expected array size
+    //         [OpCode(OpCode.NUMEQUAL)]
+    //         [OpCode(OpCode.BOOLAND)]
+    //         get;
+    //     }
+
+
+    //     [OpCode(OpCode.NOP)]
+    //     public static extern implicit operator ByteString(Address address);
+
+    //     [OpCode(OpCode.NOP)]
+    //     public static extern implicit operator UInt160(Address address);
+    //     [OpCode(OpCode.NOP)]
+    //     public static extern implicit operator Address(UInt160 address);
+    // }
 
     public class StorageGroupAttribute : Attribute
     {

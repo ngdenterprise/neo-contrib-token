@@ -18,17 +18,17 @@ namespace NgdEnterprise.Samples
         const byte Prefix_AccountToken = 0x04;
         const byte Prefix_ContractOwner = 0xFF;
 
-        public class BalanceStorageGroup : IStorageGroup<Address, BigInteger>
+        public class BalanceStorageGroup : IStorageGroup<UInt160, BigInteger>
         {
             StorageMap map = new StorageMap(Storage.CurrentContext, Prefix_Balance);
-            public BigInteger Get(Address key)
+            public BigInteger Get(UInt160 key)
             {
                 var value = map.Get(key);
                 return value == null ? BigInteger.Zero : (BigInteger)value;
             }
 
-            public void Put(Address key, BigInteger value) => map.Put(key, value);
-            public void Delete(Address key) => map.Delete(key);
+            public void Put(UInt160 key, BigInteger value) => map.Put(key, value);
+            public void Delete(UInt160 key) => map.Delete(key);
         }
 
         public class TokenStorageGroup : IStorageGroup<UInt256, TokenState>
@@ -47,21 +47,21 @@ namespace NgdEnterprise.Samples
             public void Delete(UInt256 key) => map.Delete(key);
         }
 
-        public class AccountTokenStorageGroup : IStorageGroup<Address, UInt256, BigInteger>
+        public class AccountTokenStorageGroup : IStorageGroup<UInt160, UInt256, BigInteger>
         {
             StorageMap map = new StorageMap(Storage.CurrentContext, Prefix_AccountToken);
 
-            public BigInteger Get(Address owner, UInt256 tokenId)
+            public BigInteger Get(UInt160 owner, UInt256 tokenId)
             {
                 var value = map.Get(owner + tokenId);
                 return value == null ? BigInteger.Zero : (BigInteger)value;
             }
 
             // TODO: generic iterator class support
-            public Iterator Find(Address owner, FindOptions options = FindOptions.KeysOnly | FindOptions.RemovePrefix)
+            public Iterator Find(UInt160 owner, FindOptions options = FindOptions.KeysOnly | FindOptions.RemovePrefix)
                 => map.Find(owner, options);
-            public void Put(Address owner, UInt256 tokenId, BigInteger value) => map.Put(owner + tokenId, value);
-            public void Delete(Address owner, UInt256 tokenId) => map.Delete(owner + tokenId);
+            public void Put(UInt160 owner, UInt256 tokenId, BigInteger value) => map.Put(owner + tokenId, value);
+            public void Delete(UInt160 owner, UInt256 tokenId) => map.Delete(owner + tokenId);
         }
 
         [StorageGroup(Prefix_TotalSupply)]
@@ -88,9 +88,9 @@ namespace NgdEnterprise.Samples
         public static TokenStorageGroup Tokens => new TokenStorageGroup();
 
         [StorageGroup(Prefix_ContractOwner)]
-        public static Address ContractOwner
+        public static UInt160 ContractOwner
         {
-            get => (Address)Storage.Get(Storage.CurrentContext, new byte[] { Prefix_ContractOwner });
+            get => (UInt160)Storage.Get(Storage.CurrentContext, new byte[] { Prefix_ContractOwner });
             set => Storage.Put(Storage.CurrentContext, new byte[] { Prefix_ContractOwner }, value);
         }
     }
