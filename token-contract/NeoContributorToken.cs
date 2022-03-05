@@ -31,10 +31,10 @@ namespace NgdEnterprise.Samples
         public static event OnTransferDelegate OnTransfer = default!;
 
         [Safe]
-        public string Symbol() => "NEOCNTRB";
+        public static string Symbol() => "NEOCNTRB";
 
         [Safe]
-        public byte Decimals() => 0;
+        public static byte Decimals() => 0;
 
         [Safe]
         public static BigInteger TotalSupply() => ContractStorage.TotalSupply;
@@ -141,7 +141,7 @@ namespace NgdEnterprise.Samples
             return tokenId;
         }
 
-        public bool Withdraw(UInt160 to)
+        public static bool Withdraw(UInt160 to)
         {
             if (!ValidateContractOwner()) throw new Exception("Only the contract owner can withdraw NEO");
             if (to == UInt160.Zero || !to.IsValid) throw new Exception("Invalid withdrawal address");
