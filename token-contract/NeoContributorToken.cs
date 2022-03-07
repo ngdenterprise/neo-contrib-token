@@ -29,11 +29,27 @@ namespace NgdEnterprise.Samples
         [DisplayName("Transfer")]
         public static event OnTransferDelegate OnTransfer = default!;
 
+
+        [StorageGroup(typeof(BigInteger))]
         const byte Prefix_TotalSupply = 0x00;
+
+        [StorageGroup("Balances", typeof(BigInteger))]
+        [StorageKeySegment("owner", StorageKeySegmentType.Address)]
         const byte Prefix_Balance = 0x01;
+
+        [StorageGroup(typeof(BigInteger))]
         const byte Prefix_TokenId = 0x02;
+
+        [StorageGroup("Tokens", typeof(TokenState))]
+        [StorageKeySegment("tokenId", StorageKeySegmentType.Hash256)]
         const byte Prefix_Token = 0x03;
+
+        [StorageGroup(typeof(int))]
+        [StorageKeySegment("owner", StorageKeySegmentType.Address)]
+        [StorageKeySegment("tokenId", StorageKeySegmentType.Hash256)]
         const byte Prefix_AccountToken = 0x04;
+
+        [StorageGroup(typeof(UInt160))]
         const byte Prefix_ContractOwner = 0xFF;
 
         [Safe]
