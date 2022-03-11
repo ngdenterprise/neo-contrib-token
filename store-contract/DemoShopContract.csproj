@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Neo.SmartContract.Framework" Version="3.1.0" />
+    <PackageReference Include="Neo.SmartContract.Framework" Version="3.1.1034-storage-schema-preview" />
   </ItemGroup>
 
   <Target Name="ConfigureContractOutputProperties" BeforeTargets="ExecuteNccs">
@@ -26,7 +26,7 @@
       <_NccsOptimizeArgument Condition="'$(Configuration)'!='Debug'"></_NccsOptimizeArgument>
     </PropertyGroup>
 
-    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet nccs --contract-name $(AssemblyName) --debug $(_NccsOptimizeArgument) &quot;$(MSBuildProjectFullPath)&quot;" />
+    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet nccs --no-compress-debug-info --contract-name $(AssemblyName) --debug $(_NccsOptimizeArgument) &quot;$(MSBuildProjectFullPath)&quot;" />
   </Target>
 
   <Target Name="EchoNccsOutput" AfterTargets="CopyFilesToOutputDirectory" >

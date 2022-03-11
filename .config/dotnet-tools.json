@@ -9,7 +9,7 @@
       ]
     },
     "neo.compiler.csharp": {
-      "version": "3.1.0",
+      "version": "3.1.1034-storage-schema-preview",
       "commands": [
         "nccs"
       ]

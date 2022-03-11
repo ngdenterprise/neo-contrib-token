@@ -12,7 +12,7 @@ using Neo.SmartContract.Framework.Services;
 
 namespace NgdEnterprise.Samples
 {
-    [DisplayName("NgdEnterprise.Samples.DemoShopContract")]
+    [DisplayName("DemoShopContract")]
     [ContractPermission("*", "transfer")]
     public class DemoShopContract : SmartContract
     {
@@ -34,7 +34,12 @@ namespace NgdEnterprise.Samples
         [DisplayName("ListingRemoved")]
         public static event OnListingRemovedDelegate OnListingRemoved = default!;
 
+        [StorageGroup("Listings", typeof(ListingState))]
+        [StorageKeySegment("listingId", StorageKeySegmentType.Hash256)]
+
         const byte Prefix_Listing = 0x00;
+
+        [StorageGroup(typeof(UInt160))]
         const byte Prefix_ContractOwner = 0xFF;
 
         public static void OnNEP11Payment(UInt160 from, BigInteger amount, ByteString tokenId, object data)
@@ -58,7 +63,7 @@ namespace NgdEnterprise.Samples
             if (!CompleteSale((UInt256)data, from, amount)) throw new Exception("Sale failed to complete");
         }
 
-        public static bool CancelListing(ByteString listingId)
+        public static bool CancelListing(UInt256 listingId)
         {
             StorageMap listingMap = new(Storage.CurrentContext, Prefix_Listing);
             var listingData = listingMap[listingId];
