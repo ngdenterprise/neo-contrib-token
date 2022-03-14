@@ -1,6 +1,27 @@
-# neo-contrib-token // sample code for demonstration purposes
-#
-# NFT Tutorial
+# neo-contrib-token - sample Neo NFT token 
+
+## Storage Schema Preview
+
+The `storage-schema-preview` branch has been updated to use the new 
+to try out the new Neo Debugger and C# compiler previews.
+
+> Note, the Storage Schema feature is in active development. Please pull changes
+  to this branch regularly to ensure you have latest code and tooling available.
+
+* Install the pre-release version of the [Neo Smart Contract Debugger](https://marketplace.visualstudio.com/items?itemName=ngd-seattle.neo-contract-debug).
+  You can read about installing pre-release VSCode extensions in the
+  [VSCode Release Notes](https://code.visualstudio.com/updates/v1_63#_pre-release-extensions).
+  * Pre-release builds of the Neo Smart Contract Debugger have odd minor version numbers.
+    Debugger version v3.3 includes support for Storage Schema Preview.
+* Clone the `neo-contrib-token` repo and checkout the ``storage-schema-preview`.
+* Run the `reset neo express` build task. This task will install the right tools,
+  compile the contracts in the repo and create the Neo-Express checkpoints needed
+  for all debug launch configurations. Build tasks can be accessed via the VSCode
+  `Terminal` menu.
+  * This task will install the Storage Schema Preview of the Neo C# Compiler as a 
+    [dotnet local tool](https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-local-tool).
+    Local dotnet tools do don't interfere with global dotnet tools or local dotnet
+    tools in other folders.
 
 ## NeoContributorToken
 1) mint tokens (name, description, image URL) 
