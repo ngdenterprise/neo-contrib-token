@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Neo.SmartContract.Framework" Version="3.1.1034-storage-schema-preview" />
+    <PackageReference Include="Neo.SmartContract.Framework" Version="3.1.1035-storage-schema-preview" />
   </ItemGroup>
 
   <Target Name="ConfigureContractOutputProperties" BeforeTargets="ExecuteNccs">
