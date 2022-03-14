@@ -1,6 +1,10 @@
-# neo-contrib-token // sample code for demonstration purposes
-#
-# NFT Tutorial
+# neo-contrib-token - sample Neo NFT token 
+
+## Storage Schema Preview
+
+Please use the
+[`storage-schema-preview` branch](https://github.com/ngdenterprise/neo-contrib-token/tree/storage-schema-preview)
+to try out the new Neo Debugger and C# compiler previews.
 
 ## NeoContributorToken
 1) mint tokens (name, description, image URL) 
