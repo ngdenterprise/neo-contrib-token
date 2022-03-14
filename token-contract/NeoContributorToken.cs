@@ -24,7 +24,7 @@ namespace NgdEnterprise.Samples
             public string Image = string.Empty;
         }
 
-        public delegate void OnTransferDelegate(UInt160? from, UInt160 to, BigInteger amount, ByteString tokenId);
+        public delegate void OnTransferDelegate(UInt160? from, UInt160 to, BigInteger amount, UInt256 tokenId);
 
         [DisplayName("Transfer")]
         public static event OnTransferDelegate OnTransfer = default!;
@@ -71,7 +71,7 @@ namespace NgdEnterprise.Samples
         }
 
         [Safe]
-        public static UInt160 OwnerOf(ByteString tokenId)
+        public static UInt160 OwnerOf(UInt256 tokenId)
         {
             StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
             TokenState token = (TokenState)StdLib.Deserialize(tokenMap[tokenId]);
@@ -99,6 +99,41 @@ namespace NgdEnterprise.Samples
         }
 
         [Safe]
+        public static List<TokenState> TokenList()
+        {
+            List<TokenState> tokens = new();
+
+            StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
+            var iterator = tokenMap.Find(FindOptions.DeserializeValues | FindOptions.ValuesOnly);
+            while (iterator.Next())
+            {
+                var token = (TokenState)iterator.Value;
+                tokens.Add(token);
+            }
+
+            return tokens;
+        }
+
+        [Safe]
+        public static Map<UInt256, TokenState> TokenMap()
+        {
+            Map<UInt256, TokenState> tokens = new();
+
+            StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
+            var iterator = tokenMap.Find(FindOptions.RemovePrefix | FindOptions.DeserializeValues);
+            while (iterator.Next())
+            {
+                var kvp = (object[])iterator.Value;
+                var tokenId = (UInt256)kvp[0];
+                var token = (TokenState)kvp[1];
+                tokens[tokenId] = token;
+            }
+
+            return tokens;
+        }
+        
+
+        [Safe]
         public static Iterator TokensOf(UInt160 owner)
         {
             if (owner is null || !owner.IsValid)
@@ -107,7 +142,7 @@ namespace NgdEnterprise.Samples
             return accountMap.Find(owner, FindOptions.KeysOnly | FindOptions.RemovePrefix);
         }
 
-        public static bool Transfer(UInt160 to, ByteString tokenId, object? data)
+        public static bool Transfer(UInt160 to, UInt256 tokenId, object? data)
         {
             if (to is null || !to.IsValid) throw new Exception("The argument \"to\" is invalid.");
 
@@ -183,7 +218,7 @@ namespace NgdEnterprise.Samples
         {
             if (data != null)
             {
-                var tokenId = (ByteString)data;
+                var tokenId = (UInt256)data;
                 if (Runtime.CallingScriptHash != NEO.Hash) throw new Exception("Wrong calling script hash");
                 if (amount < 10) throw new Exception("Insufficient payment price");
 
@@ -223,7 +258,7 @@ namespace NgdEnterprise.Samples
             Storage.Put(context, key, totalSupply);
         }
 
-        static void UpdateBalance(UInt160 owner, ByteString tokenId, int increment)
+        static void UpdateBalance(UInt160 owner, UInt256 tokenId, int increment)
         {
             StorageMap balanceMap = new(Storage.CurrentContext, Prefix_Balance);
             BigInteger balance = (BigInteger)balanceMap[owner];
@@ -244,7 +279,7 @@ namespace NgdEnterprise.Samples
                 accountMap.Delete(key);
         }
 
-        static void PostTransfer(UInt160? from, UInt160 to, ByteString tokenId, object? data)
+        static void PostTransfer(UInt160? from, UInt160 to, UInt256 tokenId, object? data)
         {
             OnTransfer(from, to, 1, tokenId);
             if (to is not null && ContractManagement.GetContract(to) is not null)

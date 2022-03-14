@@ -66,6 +66,30 @@
             ]
         },
         {
+            "name": "TokenList",
+            "type": "neo-contract",
+            "request": "launch",
+            "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
+            "neo-express": "${workspaceFolder}/default.neo-express",
+            "checkpoint": "${workspaceFolder}/checkpoints/tokens-minted.neoxp-checkpoint",
+            "invocation": {
+                "operation": "tokenList",
+                "args": []
+            },
+        },
+        {
+            "name": "TokenMap",
+            "type": "neo-contract",
+            "request": "launch",
+            "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorToken.nef",
+            "neo-express": "${workspaceFolder}/default.neo-express",
+            "checkpoint": "${workspaceFolder}/checkpoints/tokens-minted.neoxp-checkpoint",
+            "invocation": {
+                "operation": "tokenMap",
+                "args": []
+            },
+        },
+        {
             "name": "mint (fail)",
             "type": "neo-contract",
             "request": "launch",

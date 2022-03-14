@@ -12,12 +12,12 @@ namespace test
     {
         public static readonly byte[] CONTRACT_OWNER_KEY = new byte[] { 0xFF };
 
-        public static byte[] CalculateTokenId(this DataCache snapshot, BigInteger index)
+        public static Neo.UInt256 CalculateTokenId(this DataCache snapshot, BigInteger index)
         {
             // Nep11Token class generates NFT identifiers by combining the TOKEN_ID_SALT with a token counter then takes a SHA256 hash of the result.
             // Since this checkpoint has no NFTs deployed yet, the token ID should be the SHA256 hash of the token script hash.
             var scriptHash = Neo.Utility.StrictUTF8.GetBytes(nameof(NeoContributorToken) + index.ToString());
-            return scriptHash.Sha256();
+            return new Neo.UInt256(scriptHash.Sha256());
         }
 
         public static IReadOnlyList<Neo.VM.Types.StackItem> ToList(this Neo.SmartContract.Iterators.IIterator iterator)
