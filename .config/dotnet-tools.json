@@ -3,13 +3,13 @@
   "isRoot": true,
   "tools": {
     "neo.express": {
-      "version": "3.1.38",
+      "version": "3.1.46",
       "commands": [
         "neoxp"
       ]
     },
     "neo.compiler.csharp": {
-      "version": "3.1.1035-storage-schema-preview",
+      "version": "3.1.1037-storage-schema-preview",
       "commands": [
         "nccs"
       ]
