@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <NeoContractName>$(AssemblyName)</NeoContractName>
     <Nullable>enable</Nullable>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
@@ -8,33 +9,5 @@
   <ItemGroup>
     <PackageReference Include="Neo.SmartContract.Framework" Version="3.1.0" />
   </ItemGroup>
-
-  <Target Name="ConfigureContractOutputProperties" BeforeTargets="ExecuteNccs">
-    <PropertyGroup>
-      <_NccsOutputDirectory>bin\sc</_NccsOutputDirectory>
-      <_OutputNeoContractPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(_NccsOutputDirectory)', '$(AssemblyName).nef'))</_OutputNeoContractPath>
-      <_OutputNeoContractManifestPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(_NccsOutputDirectory)', '$(AssemblyName).manifest.json'))</_OutputNeoContractManifestPath>
-      <_OutputNeoContractDebugInfoPath>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(_NccsOutputDirectory)', '$(AssemblyName).nefdbgnfo'))</_OutputNeoContractDebugInfoPath>
-    </PropertyGroup>
-  </Target>
-
-   <!-- <ItemGroup>
-    <AdditionalTargetFrameworkInfoProperty Include="_OutputNeoContractPath"/>
-  </ItemGroup> -->
-
-  <Target Name="ExecuteNccs" AfterTargets="Compile" 
-          Inputs="$(MSBuildProjectFullPath);@(Compile);" 
-          Outputs="$(_OutputNeoContractPath);$(_OutputNeoContractManifestPath);$(_OutputNeoContractDebugInfoPath)">
-    <PropertyGroup>
-      <_NccsOptimizeArgument Condition="'$(Configuration)'=='Debug'">--no-optimize</_NccsOptimizeArgument>
-      <_NccsOptimizeArgument Condition="'$(Configuration)'!='Debug'"></_NccsOptimizeArgument>
-    </PropertyGroup>
-
-    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet nccs --contract-name $(AssemblyName) --debug $(_NccsOptimizeArgument) &quot;$(MSBuildProjectFullPath)&quot;" />
-  </Target>
-
-  <Target Name="EchoNccsOutput" AfterTargets="CopyFilesToOutputDirectory" >
-    <Message Text="$(AssemblyName) Contract -> $(_OutputNeoContractPath)" Importance="high" />
-  </Target>
 
 </Project>

@@ -2,11 +2,13 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <NeoContractManifestPath>..\token-contract\bin\sc\NeoContributorToken.manifest.json</NeoContractManifestPath>
-    <NeoContractName>NeoContribToken</NeoContractName>
-    <NeoTestPackagesVersion>3.1.10</NeoTestPackagesVersion>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <NeoContractReference Include="..\token-contract\NeoContributorToken.csproj" />
+    <NeoContractReference Include="..\store-contract\DemoShopContract.csproj" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="3.0.2">
