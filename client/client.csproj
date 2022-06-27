@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Neo.BlockchainToolkit3" Version="1.0.51-preview"/>
-    <PackageReference Include="Neo.Network.RPC.RpcClient" Version="3.0.0-rc3"/>
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.1.0"/>
+    <PackageReference Include="Neo.BlockchainToolkit.Library" Version="3.3.21" />
+    <PackageReference Include="Neo.Network.RPC.RpcClient" Version="3.3.1" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.0.1" />
   </ItemGroup>
 </Project>

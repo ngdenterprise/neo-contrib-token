@@ -22,10 +22,11 @@ namespace test
 
         public static IReadOnlyList<Neo.VM.Types.StackItem> ToList(this Neo.SmartContract.Iterators.IIterator iterator)
         {
+            var refCounter = new Neo.VM.ReferenceCounter();
             var list = new List<Neo.VM.Types.StackItem>();
             while (iterator.Next())
             {
-                list.Add(iterator.Value());
+                list.Add(iterator.Value(refCounter));
             }
             return list;
         }

@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build-client",
-            "program": "${workspaceFolder}/client/bin/Debug/net5.0/client.dll",
+            "program": "${workspaceFolder}/client/bin/Debug/net6.0/client.dll",
             "args": "list",
             "cwd": "${workspaceFolder}/client",
             "console": "internalConsole",
@@ -20,7 +20,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build-client",
-            "program": "${workspaceFolder}/client/bin/Debug/net5.0/client.dll",
+            "program": "${workspaceFolder}/client/bin/Debug/net6.0/client.dll",
             "args": "buy 3DE216101CF594FBBB43CF99E6ED3FC54AFB2E4BBD10F88BA5FA4169B648C923 alice",
             "cwd": "${workspaceFolder}/client",
             "console": "internalConsole",
@@ -31,11 +31,22 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build-client",
-            "program": "${workspaceFolder}/client/bin/Debug/net5.0/client.dll",
+            "program": "${workspaceFolder}/client/bin/Debug/net6.0/client.dll",
             "args": "buy 3DE216101CF594FBBB43CF99E6ED3FC54AFB2E4BBD10F88BA5FA4169B648C923 alice --wait",
             "cwd": "${workspaceFolder}/client",
             "console": "internalConsole",
             "stopAtEntry": false
+        },
+        {
+            "name": "CutieToken.nef",
+            "type": "neo-contract",
+            "request": "launch",
+            "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorTokens.nef",
+            "invocation": {
+                "operation": "totalSupply",
+                "args": []
+            },
+            "storage": []
         },
         {
             "name": "deploy",
