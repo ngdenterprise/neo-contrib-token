@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Neo.SmartContract.Framework" Version="3.1.0" />
+    <PackageReference Include="Neo.SmartContract.Framework" Version="3.3.0" />
     <!-- reference to NeoContributorToken only in place to ensure both contract are built before running NeoExpressBatchFile -->
     <ProjectReference Include="..\token-contract\NeoContributorToken.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
