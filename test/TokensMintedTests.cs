@@ -45,8 +45,8 @@ namespace test
         }
 
 
-        [Fact(Skip = "Ignore for now")]  
-        public void can_puchase_nep11()
+        [Fact]  
+        public void can_purchase_nep11()
         {
             var settings = chain.GetProtocolSettings();
             var alice = chain.GetDefaultAccount("alice").ToScriptHash(settings.AddressVersion);

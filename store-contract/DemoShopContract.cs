@@ -12,7 +12,7 @@ using Neo.SmartContract.Framework.Services;
 
 namespace NgdEnterprise.Samples
 {
-    [DisplayName("NgdEnterprise.Samples.DemoShopContract")]
+    [DisplayName("DemoShopContract")]
     [ContractPermission("*", "transfer")]
     public class DemoShopContract : SmartContract
     {

@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <NeoContractName>$(AssemblyName)</NeoContractName>
-    <NeoExpressBatchFile>..\setup-express.batch</NeoExpressBatchFile>
+    <!-- <NeoExpressBatchFile>..\setup-express.batch</NeoExpressBatchFile> -->
     <Nullable>enable</Nullable>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Neo.SmartContract.Framework" Version="3.1.0" />
+    <!-- reference to NeoContributorToken only in place to ensure both contract are built before running NeoExpressBatchFile -->
     <ProjectReference Include="..\token-contract\NeoContributorToken.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 

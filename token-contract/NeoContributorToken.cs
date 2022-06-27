@@ -11,7 +11,7 @@ using Neo.SmartContract.Framework.Services;
 
 namespace NgdEnterprise.Samples
 {
-    [DisplayName("NgdEnterprise.Samples.NeoContributorToken")]
+    [DisplayName("NeoContributorToken")]
     [SupportedStandards("NEP-11")]
     [ContractPermission("*", "onNEP11Payment")]
     public class NeoContributorToken : SmartContract
