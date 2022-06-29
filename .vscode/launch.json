@@ -38,7 +38,7 @@
             "stopAtEntry": false
         },
         {
-            "name": "CutieToken.nef",
+            "name": "totalSupply",
             "type": "neo-contract",
             "request": "launch",
             "program": "${workspaceFolder}/token-contract/bin/sc/NeoContributorTokens.nef",
