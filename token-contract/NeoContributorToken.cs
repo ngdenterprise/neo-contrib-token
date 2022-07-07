@@ -37,6 +37,9 @@ namespace NgdEnterprise.Samples
         const byte Prefix_ContractOwner = 0xFF;
 
         [Safe]
+        public static bool CheckWitness(UInt160 account) => Runtime.CheckWitness(account);
+
+        [Safe]
         public static string Symbol() => "NEOCNTRB";
 
         [Safe]
@@ -80,6 +83,40 @@ namespace NgdEnterprise.Samples
         {
             StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
             return tokenMap.Find(FindOptions.KeysOnly | FindOptions.RemovePrefix);
+        }
+
+        [Safe]
+        public static List<TokenState> TokenList()
+        {
+            List<TokenState> tokens = new();
+
+            StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
+            var iterator = tokenMap.Find(FindOptions.DeserializeValues | FindOptions.ValuesOnly);
+            while (iterator.Next())
+            {
+                var token = (TokenState)iterator.Value;
+                tokens.Add(token);
+            }
+
+            return tokens;
+        }
+
+        [Safe]
+        public static Map<UInt256, TokenState> TokenMap()
+        {
+            Map<UInt256, TokenState> tokens = new();
+
+            StorageMap tokenMap = new(Storage.CurrentContext, Prefix_Token);
+            var iterator = tokenMap.Find(FindOptions.RemovePrefix | FindOptions.DeserializeValues);
+            while (iterator.Next())
+            {
+                var kvp = (object[])iterator.Value;
+                var tokenId = (UInt256)kvp[0];
+                var token = (TokenState)kvp[1];
+                tokens[tokenId] = token;
+            }
+
+            return tokens;
         }
 
         [Safe]

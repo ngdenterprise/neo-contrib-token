@@ -16,6 +16,9 @@ namespace NgdEnterprise.Samples
     [ContractPermission("*", "transfer")]
     public class DemoShopContract : SmartContract
     {
+        [InitialValue("8d1b41527e9175a85a6410476b69b28ac90c7f1d", ContractParameterType.Hash160)]
+        static readonly UInt160 NeoContribTokenHash = default!;
+
         public class ListingState
         {
             public UInt160 TokenScriptHash = UInt160.Zero;
@@ -50,6 +53,9 @@ namespace NgdEnterprise.Samples
 
         public static void OnNEP17Payment(UInt160 from, BigInteger amount, object data)
         {
+            var checkWitness = Runtime.CheckWitness(from);
+            var checkWitness2 = (bool)Contract.Call(NeoContribTokenHash, "checkWitness", CallFlags.ReadOnly, from);
+
             if (from is null || !from.IsValid) throw new Exception("The argument \"from\" can't be null");
             if (Runtime.CallingScriptHash != NEO.Hash) throw new Exception("DemoShop only accepts NEO tokens");
             if (amount <= 0) throw new Exception("Invalid payment amount");
