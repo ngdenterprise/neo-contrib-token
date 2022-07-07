@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Neo.BlockchainToolkit.Library" Version="3.3.21" />
+    <PackageReference Include="Neo.BlockchainToolkit.Library" Version="3.3.22" />
     <PackageReference Include="Neo.Network.RPC.RpcClient" Version="3.3.1" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.0.1" />
   </ItemGroup>
