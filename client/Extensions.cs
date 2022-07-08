@@ -54,6 +54,7 @@ namespace client
                 var message = string.IsNullOrEmpty(result.Exception) ? $"{method} returned {result.State}" : result.Exception;
                 throw new Exception(message);
             }
+
             if (!string.IsNullOrEmpty(result.Session)
                 && result.Stack.Length > 0
                 && TryGetIteratorId(result.Stack[0], out var iteratorId))
@@ -62,6 +63,11 @@ namespace client
                 {
                     yield return (ByteString)StackItemFromJson(json);
                 }
+            }
+            else
+            {
+                var message = $"{method} did not return a valid iterator";
+                throw new Exception(message);
             }
 
             static bool TryGetIteratorId(StackItem item, out string iteratorId)
