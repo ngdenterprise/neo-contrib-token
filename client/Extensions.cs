@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Neo;
 using Neo.BlockchainToolkit;
@@ -9,6 +10,12 @@ using Neo.IO.Json;
 using Neo.Network.RPC;
 using Neo.Network.RPC.Models;
 using Neo.VM.Types;
+
+using static Neo.Network.RPC.Utility;
+
+using ByteString = Neo.VM.Types.ByteString;
+using InteropInterface = Neo.VM.Types.InteropInterface;
+using StackItem = Neo.VM.Types.StackItem;
 
 namespace client
 {
@@ -20,77 +27,66 @@ namespace client
             return new RpcClient(new Uri($"http://localhost:{chain.ConsensusNodes.First().RpcPort}"), protocolSettings: settings);
         }
 
-        // work around https://github.com/neo-project/neo-devpack-dotnet/issues/647
-        static async Task<RpcInvokeResult> InvokeIteratorScriptAsync(this RpcClient rpcClient, byte[] script, params Neo.Network.P2P.Payloads.Signer[] signers)
-        {
-            List<JObject> parameters = new List<JObject> { Convert.ToBase64String(script) };
-            if (signers.Length > 0)
-            {
-                parameters.Add(signers.Select(p => p.ToJson()).ToArray());
-            }
-            var json = await rpcClient.RpcSendAsync("invokescript", parameters.ToArray()).ConfigureAwait(false);
-            var result = RpcInvokeResult.FromJson(json);
-            result.Stack = ((JArray)json["stack"]).Select(IteratorStackItemFromJson).ToArray();
-            return result;
-
-            static StackItem IteratorStackItemFromJson(JObject json)
-            {
-                StackItemType type = json["type"].TryGetEnum<StackItemType>();
-                if (type == StackItemType.InteropInterface && json.ContainsProperty("iterator"))
-                {
-                    var array = new Neo.VM.Types.Array();
-                    foreach (var item in (JArray)json["iterator"])
-                        array.Add(IteratorStackItemFromJson(item));
-                    return array;
-                }
-                return Neo.Network.RPC.Utility.StackItemFromJson(json);
-            }
-        }
-
-        // work around https://github.com/neo-project/neo-devpack-dotnet/issues/652
-        public static async Task<Neo.VM.Types.ByteString[]> TokensOfAsync(this RpcClient rpcClient, UInt160 scriptHash, UInt160 owner)
+        // work around https://github.com/neo-project/neo-modules/issues/739
+        public static IAsyncEnumerable<ByteString> TokensOfAsync(this RpcClient rpcClient, UInt160 scriptHash, UInt160 owner)
         {
             const string METHOD = "tokensOf";
             var script = Neo.VM.Helper.MakeScript(scriptHash, "tokensOf", owner);
-            var result = await rpcClient.InvokeIteratorScriptAsync(script);
-
-            if (result.State != Neo.VM.VMState.HALT)
-            {
-                var message = string.IsNullOrEmpty(result.Exception) ? $"{METHOD} returned {result.State}" : result.Exception;
-                throw new Exception(message);
-            }
-            if (result.Stack.Length > 0
-                && result.Stack[0] is Neo.VM.Types.Array array)
-            {
-                return array.Cast<Neo.VM.Types.ByteString>().ToArray();
-            }
-
-            throw new Exception($"{METHOD} returned unexpected results");
+            return rpcClient.ParseTokenResultsAsync(script, METHOD);
         }
 
-        // work around https://github.com/neo-project/neo-devpack-dotnet/issues/652
-        public static async Task<Neo.VM.Types.ByteString[]> TokensAsync(this RpcClient rpcClient, UInt160 scriptHash)
+        // work around https://github.com/neo-project/neo-modules/issues/739
+        public static IAsyncEnumerable<ByteString> TokensAsync(this RpcClient rpcClient, UInt160 scriptHash)
         {
             const string METHOD = "tokens";
-            var script = Neo.VM.Helper.MakeScript(scriptHash, METHOD );
-            var result = await rpcClient.InvokeIteratorScriptAsync(script);
+            var script = Neo.VM.Helper.MakeScript(scriptHash, METHOD);
+            return rpcClient.ParseTokenResultsAsync(script, METHOD);
+        }
+
+        static async IAsyncEnumerable<ByteString> ParseTokenResultsAsync(this RpcClient rpcClient, byte[] script, string method = null)
+        {
+            method ??= "InvokeScript";
+            var result = await rpcClient.InvokeScriptAsync(script).ConfigureAwait(false);
+            await using var _ = new SessionDisposer(rpcClient, result);
 
             if (result.State != Neo.VM.VMState.HALT)
             {
-                var message = string.IsNullOrEmpty(result.Exception) ? $"{METHOD} returned {result.State}" : result.Exception;
+                var message = string.IsNullOrEmpty(result.Exception) ? $"{method} returned {result.State}" : result.Exception;
                 throw new Exception(message);
             }
-            if (result.Stack.Length > 0
-                && result.Stack[0] is Neo.VM.Types.Array array)
+            if (!string.IsNullOrEmpty(result.Session)
+                && result.Stack.Length > 0
+                && TryGetIteratorId(result.Stack[0], out var iteratorId))
             {
-                return array.Cast<Neo.VM.Types.ByteString>().ToArray();
+                await foreach (var json in rpcClient.TraverseIteratorAsync(result.Session, iteratorId))
+                {
+                    yield return (ByteString)StackItemFromJson(json);
+                }
             }
 
-            throw new Exception($"{METHOD} returned unexpected results");
+            static bool TryGetIteratorId(StackItem item, out string iteratorId)
+            {
+                if (item is InteropInterface interop)
+                {
+                    var @object = interop.GetInterface<object>();
+                    if (@object is JObject json)
+                    {
+                        iteratorId = json["id"]?.AsString() ?? "";
+                        if (json["interface"]?.AsString() == "IIterator"
+                            && !string.IsNullOrEmpty(iteratorId))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                iteratorId = string.Empty;
+                return false;
+            }
         }
 
-        // work around https://github.com/neo-project/neo-devpack-dotnet/issues/652
-        public static async Task<IReadOnlyDictionary<string, StackItem>> PropertiesAsync(this RpcClient rpcClient, UInt160 scriptHash, Neo.VM.Types.ByteString tokenId)
+        // work around https://github.com/neo-project/neo-modules/issues/739
+        public static async Task<IReadOnlyDictionary<string, StackItem>> PropertiesAsync(this RpcClient rpcClient, UInt160 scriptHash, ByteString tokenId)
         {
             const string METHOD = "properties";
             var script = Neo.VM.Helper.MakeScript(scriptHash, METHOD, tokenId.GetSpan().ToArray());
@@ -126,6 +122,28 @@ namespace client
                 return contracts;
             }
             throw new Exception($"{METHOD} returned unexpected results");
+        }
+
+        class SessionDisposer : IAsyncDisposable
+        {
+            readonly RpcClient rpcClient;
+            readonly RpcInvokeResult result;
+            int disposed = 0;
+
+            public SessionDisposer(RpcClient rpcClient, RpcInvokeResult result)
+            {
+                this.rpcClient = rpcClient;
+                this.result = result;
+            }
+
+            public async ValueTask DisposeAsync()
+            {
+                if (!string.IsNullOrEmpty(result.Session)
+                    && Interlocked.CompareExchange(ref disposed, 1, 0) == 0)
+                {
+                    await rpcClient.TerminateSessionAsync(result.Session);
+                }
+            }
         }
     }
 }

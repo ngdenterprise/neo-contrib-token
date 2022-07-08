@@ -25,13 +25,15 @@ namespace client
                 var contractHash = contracts["NeoContributorToken"];
 
                 // print the list of minted tokens
-                var tokensOf = Available
-                    ? await rpcClient.TokensOfAsync(contractHash, UInt160.Zero)
-                    : await rpcClient.TokensAsync(contractHash);
-                for (int i = 0; i < tokensOf.Length; i++)
+                var tokenEnumerator = Available
+                    ? rpcClient.TokensOfAsync(contractHash, UInt160.Zero)
+                    : rpcClient.TokensAsync(contractHash);
+                
+                int count = 0;
+                await foreach (var tokenId in tokenEnumerator)
                 {
                     // retrieve properties of NFT
-                    var props = await rpcClient.PropertiesAsync(contractHash, tokensOf[i]);
+                    var props = await rpcClient.PropertiesAsync(contractHash, tokenId);
 
                     // Convert NFT properties to readable types
                     var owner = new UInt160(props["owner"].GetSpan());
@@ -40,13 +42,13 @@ namespace client
                     var image = props["image"].GetString();
 
                     // Write token info to console
-                    console.WriteLine($"{i + 1}. {name} ({description})");
+                    console.WriteLine($"{++count}. {name} ({description})");
                     console.WriteLine($"\t{image}");
                     if (owner == UInt160.Zero)
                         console.WriteLine($"\tAvailable");
                     else
                         console.WriteLine($"\tOwned By {Neo.Wallets.Helper.ToAddress(owner, chain.AddressVersion)}");
-                    console.WriteLine($"\tToken ID: {Convert.ToHexString(tokensOf[i].GetSpan())}");
+                    console.WriteLine($"\tToken ID: {Convert.ToHexString(tokenId.GetSpan())}");
                 }
 
                 return 0;
